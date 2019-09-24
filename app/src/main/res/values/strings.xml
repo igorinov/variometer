@@ -1,0 +1,58 @@
+<resources>
+    <string name="app_name">Variometer</string>
+    <string name="app_description">Vertical speed indicator</string>
+    <string name="app_copyright">© Ivan Gorinov, 2012</string>
+    <string name="home_page">http://igorinov.com/android/variometer</string>
+    <string name="about">About</string>
+    <string name="reset">Reset</string>
+    <string name="indicator">Indicator</string>
+    <string name="filter">Filter</string>
+    <string name="indicator_settings">Indicator settings</string>
+    <string name="filter_parameters">Filter parameters</string>
+    <string name="filter_type">Filter type</string>
+    <string name="linear_regression">Linear Regression</string>
+    <string name="kalman_filter">Kalman Filter</string>
+    <string name="scale_limit">Scale limit</string>
+    <string name="vsi_unit">VSI unit</string>
+    <string name="sample_size">Sample size</string>
+    <string name="label_smoother_lag">Smoother lag</string>
+    <string name="descr_smoother_lag">Smoother lag in samples. Higher values reduce noise but increase lag.</string>
+    <string name="process_noise">Process noise</string>
+    <string name="process_sigma1">VSI σ, m/s²</string>
+    <string name="process_sigma2">IVSI σ, m/s²</string>
+    <string name="std_dev">Standard Deviation</string>
+    <string name="measurement_noise">Measurement noise</string>
+    <string name="descr_sigma">Standard deviation σ (RMS noise) of sensors, same units as the sensor reading.</string>
+    <string name="label_sigma_h">Altitude, m</string>
+    <string name="label_sigma_a">Acceleration, m/s²</string>
+    <string name="bias_a">Accelerometer bias correction</string>
+    <string name="bias_a_x">X axis</string>
+    <string name="bias_a_y">Y axis</string>
+    <string name="bias_a_z">Z axis</string>
+    <string name="descr_bias_a">Accelerometer bias is specified for each axis, in m/s²</string>
+    <string name="keep_screen_on">Keep screen on</string>
+    <string name="defaults">Reset Defaults</string>
+    <string name="save">Save</string>
+    <string name="set">Set</string>
+    <string name="ok">OK</string>
+    <string name="climb">UP</string>
+    <string name="descent">DOWN</string>
+    <string name="ivsi">IVSI</string>
+    <string name="label_keep_screen">Keep screen on</string>
+    <string name="descr_keep_screen">Prevent display from sleeping</string>
+
+    <string name="pref_title_scale_limit">Scale limit</string>
+    <string name="pref_default_scale_limit">5</string>
+
+    <string-array name="pref_unit_list_titles">
+        <item>m/s</item>
+        <item>knots</item>
+        <item>100ft/min</item>
+    </string-array>
+
+    <string-array name="pref_sensor_sets">
+        <item>VSI</item>
+        <item>IVSI</item>
+    </string-array>
+
+</resources>

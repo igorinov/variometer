@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/options_root"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="2"
+        android:orientation="horizontal" >
+
+        <TextView
+            style="@style/GroupLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="2"
+            android:text="@string/kalman_filter" >
+        </TextView>
+
+        <TextView
+            android:labelFor="@id/smoother_lag"
+            style="@style/Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label_smoother_lag" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/smoother_lag"
+            style="@style/EditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="6"
+            android:gravity="right"
+            android:textAlignment="gravity"
+            android:inputType="number">
+        </TextView>
+
+        <TextView
+            style="@style/Description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="2"
+            android:text="@string/descr_smoother_lag" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/label_delta_a"
+            style="@style/GroupLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="2"
+            android:text="@string/bias_a" >
+        </TextView>
+
+        <TextView
+            style="@style/Description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="2"
+            android:text="@string/descr_bias_a" >
+        </TextView>
+
+        <TextView
+            android:labelFor="@id/bias_a_x"
+            style="@style/Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bias_a_x" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/bias_a_x"
+            style="@style/EditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="6"
+            android:inputType="number">
+        </TextView>
+
+        <TextView
+            android:labelFor="@id/bias_a_y"
+            style="@style/Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bias_a_y" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/bias_a_y"
+            style="@style/EditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="6"
+            android:inputType="number">
+        </TextView>
+
+        <TextView
+            android:labelFor="@id/bias_a_z"
+            style="@style/Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bias_a_z" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/bias_a_z"
+            style="@style/EditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="6"
+            android:inputType="number">
+        </TextView>
+
+        <TextView
+            style="@style/GroupLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="2"
+            android:text="@string/measurement_noise" >
+        </TextView>
+
+        <TextView
+            style="@style/Description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="2"
+            android:text="@string/descr_sigma" >
+        </TextView>
+
+        <TextView
+            android:labelFor="@id/sigma_h"
+            style="@style/Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label_sigma_h" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/sigma_h"
+            style="@style/EditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="6">
+        </TextView>
+
+        <TextView
+            android:labelFor="@id/sigma_a"
+            style="@style/Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label_sigma_a">
+        </TextView>
+
+        <TextView
+            android:id="@+id/sigma_a"
+            style="@style/EditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="6">
+        </TextView>
+
+        <TextView
+            style="@style/GroupLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="2"
+            android:text="@string/process_noise" >
+        </TextView>
+
+        <TextView
+            android:labelFor="@id/sigma1"
+            style="@style/Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/process_sigma1" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/sigma1"
+            style="@style/EditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="6">
+        </TextView>
+
+        <TextView
+            android:labelFor="@id/sigma2"
+            style="@style/Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/process_sigma2" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/sigma2"
+            style="@style/EditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="6">
+        </TextView>
+
+    </GridLayout>
+
+</ScrollView>

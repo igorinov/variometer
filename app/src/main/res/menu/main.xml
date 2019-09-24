@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:id="@+id/indicator_settings"
+        android:title="@string/indicator_settings">
+    </item>
+    <item
+        android:id="@+id/filter_parameters"
+        android:title="@string/filter_parameters">
+    </item>
+    <item
+        android:id="@+id/defaults"
+        android:title="@string/defaults">
+    </item>
+    <item
+        android:id="@+id/about"
+        android:title="@string/about">
+    </item>
+</menu>

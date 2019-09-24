@@ -1,0 +1,80 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:background">@color/colorPrimaryDark</item>
+        <item name="android:colorBackground">@color/colorPrimary</item>
+    </style>
+
+    <style name="Dialog" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowNoTitle">false</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
+
+    <style name="Label" parent="@android:style/TextAppearance.Medium">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:padding">4pt</item>
+    </style>
+
+    <style name="Description" parent="@android:style/TextAppearance.Small">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingBottom">4pt</item>
+        <item name="android:paddingLeft">4pt</item>
+    </style>
+
+    <style name="GroupLabel" parent="@android:style/TextAppearance.Medium">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:padding">4pt</item>
+        <item name="android:textSize">6pt</item>
+        <item name="android:background">#607d8b</item>
+    </style>
+
+    <style name="EditText" parent="android:style/TextAppearance.Medium">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textColor">#f0f4c3</item>
+        <item name="android:typeface">monospace</item>
+        <item name="android:background">#616161</item>
+        <item name="android:paddingTop">3pt</item>
+        <item name="android:paddingBottom">3pt</item>
+        <item name="android:paddingLeft">2pt</item>
+        <item name="android:paddingRight">2pt</item>
+    </style>
+
+    <style name="PushButton" parent="@android:style/TextAppearance.Medium">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textColor">#000000</item>
+        <item name="android:paddingTop">3pt</item>
+        <item name="android:paddingBottom">3pt</item>
+        <item name="android:paddingLeft">2pt</item>
+        <item name="android:paddingRight">2pt</item>
+        <item name="android:textSize">8pt</item>
+    </style>
+
+    <style name="MyText" parent="@android:style/TextAppearance.Large">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:typeface">monospace</item>
+        <item name="android:paddingTop">3pt</item>
+        <item name="android:paddingBottom">3pt</item>
+        <item name="android:paddingLeft">2pt</item>
+        <item name="android:paddingRight">2pt</item>
+        <!-- item name="android:textSize">8pt</item -->
+    </style>
+
+    <style name="Button" parent="Widget.AppCompat.Button">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:clickable">true</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingTop">3pt</item>
+        <item name="android:paddingBottom">3pt</item>
+        <item name="android:paddingLeft">2pt</item>
+        <item name="android:paddingRight">2pt</item>
+        <item name="android:textSize">8pt</item>
+
+    </style>
+
+</resources>

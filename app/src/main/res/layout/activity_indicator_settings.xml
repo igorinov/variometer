@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/options_root"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="2"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="2"
+            style="@style/GroupLabel"
+            android:text="@string/indicator" >
+        </TextView>
+
+        <TextView
+            android:labelFor="@id/scale_limit"
+            style="@style/Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/scale_limit" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/scale_limit"
+            style="@style/EditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="6"
+            android:gravity="right"
+            android:textAlignment="gravity"
+            android:inputType="number">
+        </TextView>
+
+        <TextView
+            style="@style/Description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="2"
+            android:text="@string/scale_limit" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/label_vsi_unit"
+            style="@style/Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/vsi_unit" >
+        </TextView>
+
+        <Spinner
+            android:id="@+id/vsi_unit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="48pt" >
+        </Spinner>
+
+        <TextView
+            android:labelFor="@id/keep_screen"
+            style="@style/Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label_keep_screen">
+        </TextView>
+
+        <CheckBox
+            android:id="@+id/keep_screen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/colorAccent">
+        </CheckBox>
+
+        <TextView
+            style="@style/Description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="2"
+            android:text="@string/descr_keep_screen" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/label_filter_type"
+            style="@style/Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/filter_type" >
+        </TextView>
+
+        <Spinner
+            android:id="@+id/filter_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="48pt" >
+        </Spinner>
+
+    </GridLayout>
+</ScrollView>
