@@ -19,7 +19,7 @@ import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -65,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
     int t = 0;
 
     int type = TYPE_IVSI;
-    int sample_size = 128;
     int vsiLimit = 5;
     int vsiUnitIndex = 0;
     int smoother_lag = 5;
@@ -78,10 +77,10 @@ public class MainActivity extends AppCompatActivity {
     /*  Values for state covariance initialization, with
      *  high confidence in zero vertical speed on startup
      */
-    static final double p_init[] = { 1000.0, 0.01, 10.0 };
+    static final double[] p_init = { 1000.0, 0.01, 10.0 };
 
-    static final float vsiUnits[] = {1, 0.51444f, 0.508f};
-    String vsiUnitNames[] = null;
+    static final float[] vsiUnits = {1, 0.51444f, 0.508f};
+    String[] vsiUnitNames = null;
 
     // AudioThread beepingThread;
 
@@ -334,6 +333,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int request, int result, Intent data) {
+        super.onActivityResult(request, result, data);
     }
 
     @Override

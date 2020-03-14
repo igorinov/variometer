@@ -5,12 +5,13 @@
 
 package com.igorinov.variometer;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ import java.util.Locale;
 
 import static android.view.View.NO_ID;
 
+@SuppressLint("Registered")
 public class SettingsActivity extends AppCompatActivity {
 
     SharedPreferences pref = null;
@@ -98,7 +100,7 @@ public class SettingsActivity extends AppCompatActivity {
             myContext = context;
         }
 
-        public IntNumberDialog(Context context, int theme) {
+        IntNumberDialog(Context context, int theme) {
             super(context, theme);
             myContext = context;
         }
@@ -109,11 +111,11 @@ public class SettingsActivity extends AppCompatActivity {
             myContext = context;
         }
 
-        public void setKey(String s) {
+        void setKey(String s) {
             key = s;
         }
 
-        public void setTarget(TextView textView) {
+        void setTarget(TextView textView) {
             target = textView;
 
             int id = target.getId();
@@ -141,7 +143,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         }
 
-        public void setNumber(int x) {
+        void setNumber(int x) {
             number = x;
             if (editNumber != null) {
                 editNumber.setText(Integer.toString(x));
@@ -156,7 +158,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         }
 
-        public void updateSetting() {
+        void updateSetting() {
             boolean valid = false;
 
             try {
@@ -183,7 +185,7 @@ public class SettingsActivity extends AppCompatActivity {
             if (key != null) {
                 SharedPreferences.Editor editor = pref.edit();
                 editor.putInt(key, number);
-                editor.commit();
+                editor.apply();
             }
             dismiss();
         }
@@ -221,7 +223,7 @@ public class SettingsActivity extends AppCompatActivity {
             myContext = context;
         }
 
-        public FloatNumberDialog(Context context, int theme) {
+        FloatNumberDialog(Context context, int theme) {
             super(context, theme);
             myContext = context;
         }
@@ -232,11 +234,11 @@ public class SettingsActivity extends AppCompatActivity {
             myContext = context;
         }
 
-        public void setKey(String s) {
+        void setKey(String s) {
             key = s;
         }
 
-        public void setTarget(TextView textView) {
+        void setTarget(TextView textView) {
             target = textView;
 
             int id = target.getId();
@@ -254,7 +256,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         }
 
-        public void setNumber(float x) {
+        void setNumber(float x) {
             number = x;
             if (editNumber != null) {
                 editNumber.setText(Float.toString(x));
@@ -269,7 +271,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         }
 
-        public void updateSetting() {
+        void updateSetting() {
             try {
                 number = Float.parseFloat(editNumber.getText().toString());
             } catch (NumberFormatException e) {
@@ -282,7 +284,7 @@ public class SettingsActivity extends AppCompatActivity {
             if (key != null) {
                 SharedPreferences.Editor editor = pref.edit();
                 editor.putFloat(key, number);
-                editor.commit();
+                editor.apply();
             }
             dismiss();
         }
@@ -343,9 +345,9 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private class IntNumberClickListener implements TextView.OnClickListener {
-        String key = null;
+        String key;
 
-        public IntNumberClickListener(String s) {
+        IntNumberClickListener(String s) {
             key = s;
         }
 
@@ -373,7 +375,7 @@ public class SettingsActivity extends AppCompatActivity {
     private class FloatNumberClickListener implements TextView.OnClickListener {
         String key;
 
-        public FloatNumberClickListener(String s) {
+        FloatNumberClickListener(String s) {
             key = s;
         }
 
@@ -419,7 +421,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void initEditInt(int edit_text_id, String key, int value) {
-        TextView textView = (TextView) findViewById(edit_text_id);
+        TextView textView = findViewById(edit_text_id);
 
         if (textView == null)
             return;
