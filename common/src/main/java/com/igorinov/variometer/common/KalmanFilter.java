@@ -3,7 +3,7 @@
  *  SPDX-License-Identifier: Apache-2.0
  */
 
-package com.igorinov.variometer;
+package com.igorinov.variometer.common;
 
 public class KalmanFilter {
     int state_vars;
@@ -27,7 +27,7 @@ public class KalmanFilter {
     Matrix I_KH, I_KH_T;
     Matrix tmp_ss, tmp_si, tmp_is;
 
-    KalmanFilter(int state, int input, int ctrls) {
+    public KalmanFilter(int state, int input, int ctrls) {
         state_vars = state;
         input_vars = input;
         control_vars = ctrls;
@@ -61,19 +61,19 @@ public class KalmanFilter {
         Q = new Matrix(state_vars, state_vars);
     }
 
-    int getState(double[] dst) {
+    public int getState(double[] dst) {
         System.arraycopy(x, 0, dst, 0, state_vars);
 
         return state_vars;
     }
 
-    int setState(double[] src) {
+    public int setState(double[] src) {
         System.arraycopy(src, 0, x, 0, state_vars);
 
         return state_vars;
     }
 
-    int setPeriod(double dt) {
+    public int setPeriod(double dt) {
         F.eye();
 
         if (state_vars == 2) {
@@ -91,7 +91,7 @@ public class KalmanFilter {
         return 0;
     }
 
-    int setProcessNoise(double dt, double var) {
+    public int setProcessNoise(double dt, double var) {
 
         // Using discrete noise model
 
@@ -119,7 +119,7 @@ public class KalmanFilter {
         return 0;
     }
 
-    int initCovariance(double[] std) {
+    public int initCovariance(double[] std) {
         double sigma;
         int i;
 
@@ -132,7 +132,7 @@ public class KalmanFilter {
         return state_vars;
     }
 
-    int setMeasurementError(double[] std) {
+    public int setMeasurementError(double[] std) {
         int i;
         double sigma;
 
@@ -147,7 +147,7 @@ public class KalmanFilter {
         return input_vars;
     }
 
-    int filterPredict(double[] u) {
+    public int filterPredict(double[] u) {
         //  Prior Mean
         //  x⁻ = Fx + Bu
 
@@ -167,7 +167,7 @@ public class KalmanFilter {
         return state_vars;
     }
 
-    int filterUpdate(double[] z) {
+    public int filterUpdate(double[] z) {
         int i;
 
         assert (z.length == input_vars);

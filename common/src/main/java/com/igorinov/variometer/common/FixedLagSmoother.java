@@ -3,7 +3,7 @@
  *  SPDX-License-Identifier: Apache-2.0
  */
 
-package com.igorinov.variometer;
+package com.igorinov.variometer.common;
 
 public class FixedLagSmoother extends KalmanFilter {
     int lag_n;
@@ -12,7 +12,7 @@ public class FixedLagSmoother extends KalmanFilter {
     double x_k[];
     int count = 0;
 
-    FixedLagSmoother(int state, int input, int controls, int lag) {
+    public FixedLagSmoother(int state, int input, int controls, int lag) {
         super(state, input, controls);
 
         lag_n = lag;
@@ -23,7 +23,7 @@ public class FixedLagSmoother extends KalmanFilter {
         F_LH = new Matrix(state, state);
     }
 
-    int filterUpdate(double[] z) {
+    public int filterUpdate(double[] z) {
         int n = lag_n;
         int i;
 
@@ -57,7 +57,7 @@ public class FixedLagSmoother extends KalmanFilter {
         return 0;
     }
 
-    int setState(double[] src) {
+    public int setState(double[] src) {
         int i;
 
         for (i = 0; i < lag_n; i += 1) {
@@ -68,7 +68,7 @@ public class FixedLagSmoother extends KalmanFilter {
         return super.setState(src);
     }
 
-    int getState(double[] dst) {
+    public int getState(double[] dst) {
         if (count < lag_n)
             System.arraycopy(x, 0, dst, 0, state_vars);
         else

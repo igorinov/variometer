@@ -5,7 +5,7 @@
     android:orientation="horizontal"
     android:background="@android:color/black">
 
-    <com.igorinov.variometer.VerticalSpeedIndicator
+    <com.igorinov.variometer.common.VerticalSpeedIndicator
         android:id="@+id/vsi"
         android:layout_width="0dip"
         android:layout_height="match_parent"

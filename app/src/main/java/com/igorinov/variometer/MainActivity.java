@@ -28,6 +28,10 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.igorinov.variometer.common.FixedLagSmoother;
+import com.igorinov.variometer.common.KalmanFilter;
+import com.igorinov.variometer.common.VerticalSpeedIndicator;
+
 import static android.media.AudioFormat.CHANNEL_OUT_MONO;
 
 public class MainActivity extends AppCompatActivity {
@@ -225,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
 
             /*
              *  Transform the acceleration vector to the reference coordinate system
-             *  of the rotation sensor, where Z axis is vertival and points up
+             *  of the rotation sensor, where Z axis is vertical and points up
              */
 
             System.arraycopy(arg0.values, 0, dataA, 0, 3);

@@ -3,7 +3,7 @@
  *  SPDX-License-Identifier: Apache-2.0
  */
 
-package com.igorinov.variometer;
+package com.igorinov.variometer.common;
 
 public class Matrix {
     public double[] data;

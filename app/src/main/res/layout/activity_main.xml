@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <com.igorinov.variometer.VerticalSpeedIndicator
+    <com.igorinov.variometer.common.VerticalSpeedIndicator
         android:id="@+id/vsi"
         android:background="@android:color/black"
         android:layout_width="match_parent"
