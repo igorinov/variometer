@@ -33,6 +33,7 @@ import com.igorinov.variometer.common.KalmanFilter;
 import com.igorinov.variometer.common.VerticalSpeedIndicator;
 
 import static android.media.AudioFormat.CHANNEL_OUT_MONO;
+import static android.media.AudioFormat.ENCODING_PCM_16BIT;
 
 public class MainActivity extends AppCompatActivity {
     AtmosphereModel atmosphere;
@@ -66,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
     boolean knownRotation = false;
     boolean knownAltitude = false;
     boolean flying = false;
+    boolean beepEnabled = true;
+    float vspeed = 0;
     int t = 0;
 
     int type = TYPE_IVSI;
@@ -86,11 +89,100 @@ public class MainActivity extends AppCompatActivity {
     static final float[] vsiUnits = {1, 0.51444f, 0.508f};
     String[] vsiUnitNames = null;
 
-    // AudioThread beepingThread;
+    AudioThread beepingThread;
 
     public class AudioThread extends Thread {
         AudioTrack track;
+        short[] audioData;
         int sample_rate = 24000;
+        double[] partPhase;
+        double[] partFreq;
+        double[] partAmpl;
+        double v0 = 0;
+        double t = 0;
+        int counter = 0;
+        int periods = 0;
+        int nPartials = 0;
+        double max_sample = 0;
+        double decay = Math.log(1000);  // Signal decays 1000 times in 1 s.
+
+        private void init(int p) {
+            int k;
+            double B = 0.0001;  // Inharmonicity coefficient
+
+            nPartials = p;
+            max_sample = 16384.0 / nPartials;
+            partFreq = new double[nPartials];
+            partAmpl = new double[nPartials];
+            partPhase = new double[nPartials];
+            for (k = 0; k < nPartials; k += 1) {
+                double n = k + 1;
+                double a = Math.sqrt(1 + B * n * n);
+                partFreq[k] = n * 500 * a;
+                partPhase[k] = 0;
+                partAmpl[k] = 1.0 / n;
+            }
+        }
+
+        private void ding() {
+            int k;
+
+            for (k = 0; k < partPhase.length; k += 1)
+                partPhase[k] = 0;
+
+            t = 0;
+        }
+
+        private void fillBuffer(short[] data, int off, int length) {
+            double v1 = vspeed;
+            double v;
+            double sample_period = 1.0 / sample_rate;
+
+            // Exponent Multiplier: beep frequency doubles every +3 m/s
+            double em = Math.log(2) / 3;
+
+            double amp, fm, dph;
+            int i, k;
+
+            double r_length = 1.0 / length;
+
+            for (i = 0; i < length; i += 1) {
+                v = v0 + (v1 - v0) * i * r_length;
+                fm = Math.exp(v * em);
+                amp = Math.exp(-decay * (t++) * fm * sample_period);
+                double sample = 0;
+
+                for (k = 0; k < nPartials; k += 1) {
+                    double f = fm * partFreq[k];
+                    double fa;
+
+                    // Low-pass filter to cut everything approaching fs/2
+                    if (f * 2 >= sample_rate)
+                        continue;
+                    fa = 1.0 / Math.cbrt(1.0 - 2 * f * sample_period);
+
+                    // Phase increment per sample
+                    dph = 2 * Math.PI * f * sample_period;
+                    sample += amp * fa * partAmpl[k] * max_sample * Math.sin(partPhase[k]);
+
+                    partPhase[k] += dph;
+                    if (partPhase[k] > Math.PI) {
+                        partPhase[k] -= 2 * Math.PI;
+                        // Ding every 250 periods of the first harmonic
+                        if (k == 0) {
+                            periods += 1;
+                            if (periods >= 250) {
+                                periods = 0;
+                                ding();
+                            }
+                        }
+                    }
+                }
+
+                data[off + i] = (short) Math.round(sample);
+            }
+            v0 = v1;
+        }
 
         @Override
         public void run() {
@@ -104,20 +196,27 @@ public class MainActivity extends AppCompatActivity {
 
                 formatBuilder.setChannelMask(CHANNEL_OUT_MONO);
                 formatBuilder.setSampleRate(sample_rate);
+                formatBuilder.setEncoding(ENCODING_PCM_16BIT);
                 AudioFormat format = formatBuilder.build();
 
-                track = new AudioTrack(attributes, format, sample_rate / 5,
+                track = new AudioTrack(attributes, format, sample_rate / 20,
                         AudioTrack.MODE_STREAM, 1);
             } else {
                 track = new AudioTrack(AudioManager.STREAM_MUSIC, sample_rate,
-                        CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT,
+                        CHANNEL_OUT_MONO, ENCODING_PCM_16BIT,
                         AudioTrack.MODE_STREAM, AudioTrack.MODE_STREAM);
             }
 
+            init(4);
             track.play();
+
+            int size = sample_rate / 20;
+            audioData = new short[size];
 
             while (flying) {
                 // To be implemented
+                fillBuffer(audioData, 0, size);
+                track.write(audioData, 0, size);
             }
             track.stop();
             track.release();
@@ -170,8 +269,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void filterUpdate() {
-        float vspeed;
-
         if (firstUpdate) {
             state[0] = input[0];
             state[1] = 0;
@@ -403,6 +500,9 @@ public class MainActivity extends AppCompatActivity {
         listenerP = new PressureListener();
 
         manager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        if (manager == null)
+            return;
+
         pressureSensor = manager.getDefaultSensor(Sensor.TYPE_PRESSURE);
     }
 
@@ -523,9 +623,10 @@ public class MainActivity extends AppCompatActivity {
         if (pressureSensor != null) {
             manager.registerListener(listenerP, pressureSensor, period_us);
         }
-/*
-        beepingThread = new AudioThread();
-        beepingThread.start();
-*/
+
+        if (beepEnabled) {
+            beepingThread = new AudioThread();
+            beepingThread.start();
+        }
     }
 }
