@@ -10,7 +10,7 @@
     <string name="indicator_settings">Indicator settings</string>
     <string name="filter_parameters">Filter parameters</string>
     <string name="filter_type">Filter type</string>
-    <string name="linear_regression">Linear Regression</string>
+    <string name="enable_sound">Enable sound</string>
     <string name="kalman_filter">Kalman Filter</string>
     <string name="scale_limit">Scale limit</string>
     <string name="vsi_unit">VSI unit</string>

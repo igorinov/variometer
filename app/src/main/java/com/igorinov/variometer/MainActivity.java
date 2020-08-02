@@ -391,11 +391,22 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent;
+        SharedPreferences.Editor editor;
 
         switch (item.getItemId()) {
             case R.id.defaults:
-                SharedPreferences.Editor editor = pref.edit();
+                editor = pref.edit();
                 editor.clear();
+                editor.apply();
+                recreate();
+                break;
+
+            case R.id.enable_sound:
+                editor = pref.edit();
+                beepEnabled = !item.isChecked();
+                item.setChecked(beepEnabled);
+                beepEnabled = item.isChecked();
+                editor.putBoolean(IndicatorSettingsActivity.PREF_SOUND_ENABLE, beepEnabled);
                 editor.apply();
                 recreate();
                 break;
@@ -429,6 +440,9 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main, menu);
+        MenuItem item = menu.findItem(R.id.enable_sound);
+        if (item != null)
+            item.setChecked(beepEnabled);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -448,6 +462,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = pref.edit();
         boolean pref_valid = pref.contains(IndicatorSettingsActivity.PREF_TYPE);
         try {
+            beepEnabled = pref.getBoolean(IndicatorSettingsActivity.PREF_SOUND_ENABLE, beepEnabled);
             type = pref.getInt(IndicatorSettingsActivity.PREF_TYPE, type);
             vsiLimit = pref.getInt(IndicatorSettingsActivity.PREF_SCALE_LIMIT, vsiLimit);
             vsiUnitIndex = pref.getInt(IndicatorSettingsActivity.PREF_UNIT_INDEX, vsiUnitIndex);
@@ -466,6 +481,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (!pref_valid) {
+            editor.putBoolean(IndicatorSettingsActivity.PREF_SOUND_ENABLE, beepEnabled);
             editor.putInt(IndicatorSettingsActivity.PREF_TYPE, type);
             editor.putInt(IndicatorSettingsActivity.PREF_SCALE_LIMIT, vsiLimit);
             editor.putInt(IndicatorSettingsActivity.PREF_UNIT_INDEX, vsiUnitIndex);
@@ -536,6 +552,7 @@ public class MainActivity extends AppCompatActivity {
         input[1] = 0;
 
         try {
+            beepEnabled = pref.getBoolean(IndicatorSettingsActivity.PREF_SOUND_ENABLE, beepEnabled);
             type = pref.getInt(IndicatorSettingsActivity.PREF_TYPE, type);
             vsiLimit = pref.getInt(IndicatorSettingsActivity.PREF_SCALE_LIMIT, vsiLimit);
             vsiUnitIndex = pref.getInt(IndicatorSettingsActivity.PREF_UNIT_INDEX, vsiUnitIndex);
