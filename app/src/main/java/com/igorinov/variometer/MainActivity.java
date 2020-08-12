@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     int type = TYPE_IVSI;
     int vsiLimit = 5;
     int vsiUnitIndex = 0;
-    int smoother_lag = 5;
+    int smoother_lag = 48;
     boolean keep_on = true;
 
     static final short REQUEST_CODE_PREFERENCES = 16384;
@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
         int periods = 0;
         int nPartials = 0;
         double max_sample = 0;
-        double decay = Math.log(1000);  // Signal decays 1000 times in 1 s.
+        double decay = Math.log(1000);  // Signal amplitude becomes 1000 times smaller in 1 s.
 
         private void init(int p) {
             int k;
@@ -583,7 +583,7 @@ public class MainActivity extends AppCompatActivity {
             if (smoother_lag > 0)
                 filter = new FixedLagSmoother(2, 1, 0, smoother_lag);
             else
-                filter = new KalmanFilter(3, 1, 0);
+                filter = new KalmanFilter(2, 1, 0);
 
             filter.initCovariance(p_init);
         }

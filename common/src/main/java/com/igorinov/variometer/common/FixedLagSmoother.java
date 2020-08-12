@@ -9,7 +9,7 @@ public class FixedLagSmoother extends KalmanFilter {
     int lag_n;
     Matrix X;
     Matrix Ps, HTSI, F_LH;
-    double x_k[];
+    double[] x_k;
     int count = 0;
 
     public FixedLagSmoother(int state, int input, int controls, int lag) {
@@ -23,6 +23,7 @@ public class FixedLagSmoother extends KalmanFilter {
         F_LH = new Matrix(state, state);
     }
 
+    @Override
     public int filterUpdate(double[] z) {
         int n = lag_n;
         int i;
@@ -39,7 +40,7 @@ public class FixedLagSmoother extends KalmanFilter {
         F_LH.transpose(tmp_ss);
 
         if (count < lag_n) {
-            n = count;
+            n = count++;
         }
 
         Ps.copy(P);
@@ -57,6 +58,7 @@ public class FixedLagSmoother extends KalmanFilter {
         return 0;
     }
 
+    @Override
     public int setState(double[] src) {
         int i;
 
@@ -68,11 +70,12 @@ public class FixedLagSmoother extends KalmanFilter {
         return super.setState(src);
     }
 
+    @Override
     public int getState(double[] dst) {
-        if (count < lag_n)
+        if (count == 0)
             System.arraycopy(x, 0, dst, 0, state_vars);
         else
-            X.rowGet(lag_n - 1, dst);
+            X.rowGet(count - 1, dst);
 
         return state_vars;
     }
