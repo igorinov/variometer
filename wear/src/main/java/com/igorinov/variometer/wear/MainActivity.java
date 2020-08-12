@@ -1,16 +1,15 @@
 package com.igorinov.variometer.wear;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.wearable.activity.WearableActivity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.TextView;
+
+import androidx.preference.PreferenceManager;
 
 import com.igorinov.variometer.common.Variometer;
 import com.igorinov.variometer.common.VerticalSpeedIndicator;
