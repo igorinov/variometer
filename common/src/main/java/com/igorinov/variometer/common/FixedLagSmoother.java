@@ -73,9 +73,9 @@ public class FixedLagSmoother extends KalmanFilter {
     @Override
     public int getState(double[] dst) {
         if (count == 0)
-            System.arraycopy(x, 0, dst, 0, state_vars);
-        else
-            X.rowGet(count - 1, dst);
+            return super.getState(dst);
+
+        X.rowGet(count - 1, dst);
 
         return state_vars;
     }
