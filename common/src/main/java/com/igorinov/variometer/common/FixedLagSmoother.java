@@ -5,6 +5,10 @@
 
 package com.igorinov.variometer.common;
 
+import static org.ejml.dense.row.CommonOps_DDRM.mult;
+import static org.ejml.dense.row.CommonOps_DDRM.subtract;
+import static org.ejml.dense.row.CommonOps_DDRM.transpose;
+
 public class FixedLagSmoother extends KalmanFilter {
     int lag_n;
     Matrix X;
@@ -24,35 +28,41 @@ public class FixedLagSmoother extends KalmanFilter {
     }
 
     @Override
-    public int filterUpdate(double[] z) {
+    public int filterUpdate(double[] input) {
         int n = lag_n;
-        int i;
+        int i, j;
 
-        super.filterUpdate(z);
+        super.filterUpdate(input);
+
+        //  X[0,:] = x_prior
 
         X.shiftDown(1);
-        X.rowSet(0, x_prior);
+        for (j = 0; j < state_vars; j += 1) {
+            X.set(0, j, x_prior.get(j));
+        }
 
-        HTSI.dotProduct(H_T, S_inv);
+        mult(H_T, S_inv, HTSI);
 
-        tmp_ss.copy(F);
-        tmp_ss.subProduct(K, H);
-        F_LH.transpose(tmp_ss);
+        mult(K, H, tmp_ss);
+        subtract(F, tmp_ss, F_LH);
+
+        transpose(F_LH);
 
         if (count < lag_n) {
             n = count++;
         }
 
-        Ps.copy(P);
+        Ps.set(P);
         for (i = 0; i < n; i += 1) {
-            K.dotProduct(Ps, HTSI);
+            mult(Ps, HTSI, K);
+            mult(Ps, F_LH, tmp_ss);
+            Ps.set(tmp_ss);
 
-            tmp_ss.dotProduct(Ps, F_LH);
-            Ps.copy(tmp_ss);
+            mult(K, y, tmp_s);
+            for (j = 0; j < state_vars; j += 1) {
+                X.add(i, j, tmp_s.get(j));
+            }
 
-            X.rowGet(i, x_k);
-            K.vmuladd(x_k, y);
-            X.rowSet(i, x_k);
         }
 
         return 0;
@@ -60,10 +70,11 @@ public class FixedLagSmoother extends KalmanFilter {
 
     @Override
     public int setState(double[] src) {
-        int i;
+        int i, j;
 
         for (i = 0; i < lag_n; i += 1) {
-            X.rowSet(i, src);
+            for (j = 0; j < state_vars; j += 1)
+            X.set(i, j, src[j]);
         }
         count = 0;
 
@@ -75,7 +86,14 @@ public class FixedLagSmoother extends KalmanFilter {
         if (count == 0)
             return super.getState(dst);
 
-        X.rowGet(count - 1, dst);
+        assert(dst.length == state_vars);
+
+        int j;
+
+        //        X.rowGet(count - 1, dst);
+        for (j = 0; j < state_vars; j += 1) {
+            dst[j] = X.get(count - 1, j);
+        }
 
         return state_vars;
     }
