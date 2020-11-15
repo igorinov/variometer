@@ -12,6 +12,7 @@ import org.ejml.interfaces.linsol.LinearSolverDense;
 import static org.ejml.dense.row.CommonOps_DDRM.add;
 import static org.ejml.dense.row.CommonOps_DDRM.addEquals;
 import static org.ejml.dense.row.CommonOps_DDRM.mult;
+import static org.ejml.dense.row.CommonOps_DDRM.multAdd;
 import static org.ejml.dense.row.CommonOps_DDRM.multTransA;
 import static org.ejml.dense.row.CommonOps_DDRM.multTransB;
 import static org.ejml.dense.row.CommonOps_DDRM.scale;
@@ -25,7 +26,8 @@ public class KalmanFilter {
     int input_vars;
     int control_vars;
 
-    Matrix z;           // Input
+    Matrix z;           // Measurement input
+    Matrix u;           // Control input
     Matrix x;           // State estimation
     Matrix x_prior;     // Prior state estimation
     Matrix y;           // Residual (Innovation)
@@ -42,7 +44,7 @@ public class KalmanFilter {
     // Temporary matrices are only allocated once
     Matrix IMKH;
     Matrix tmp_s;
-    Matrix tmp_ss, tmp_ss2, tmp_si, tmp_is;
+    Matrix tmp_ss, tmp_si, tmp_is;
 
     private LinearSolverDense<DMatrixRMaj> solver;
 
@@ -52,6 +54,7 @@ public class KalmanFilter {
         control_vars = ctrls;
 
         z = new Matrix(input_vars, 1);
+        u = new Matrix(state_vars, 1);
         x = new Matrix(state_vars, 1);
         x_prior = new Matrix(state_vars, 1);
         P = new Matrix(state_vars, state_vars);
@@ -61,7 +64,6 @@ public class KalmanFilter {
         IMKH = new Matrix(state_vars, state_vars);
         tmp_s = new Matrix(state_vars, 1);
         tmp_ss = new Matrix(state_vars, state_vars);
-        tmp_ss2 = new Matrix(state_vars, state_vars);
         tmp_si = new Matrix(state_vars, input_vars);
         tmp_is = new Matrix(input_vars, state_vars);
         S_inv = new Matrix(input_vars, input_vars);
@@ -170,11 +172,16 @@ public class KalmanFilter {
         return input_vars;
     }
 
-    public int filterPredict(double[] u) {
+    public int filterPredict(double[] control) {
         //  Prior Mean
         //  x⁻ = Fx + Bu
 
         mult(F, x, x_prior);
+        if (control != null) {
+            assert (control.length == state_vars);
+            System.arraycopy(control, 0, u.data, 0, control_vars);
+            multAdd(B, u, x_prior);
+        }
 
         //  Prior Covariance
         //  P⁻ = FPF⸆ + Q
@@ -214,8 +221,8 @@ public class KalmanFilter {
         //  State Update
         //  x = x⁻ + Ky
 
-        mult(K, y, tmp_s);
-        add(x_prior, tmp_s, x);
+        mult(K, y, x);
+        addEquals(x, x_prior);
 
         //  Covariance Update
         //  P = (I-KH)P⁻(I-KH)⸆ + KRK⸆
@@ -225,12 +232,12 @@ public class KalmanFilter {
         subtractEquals(IMKH, tmp_ss);
 
         mult(IMKH, P_prior, tmp_ss);
-        multTransB(tmp_ss, IMKH, tmp_ss2);
+        multTransB(tmp_ss, IMKH, P);
 
         mult(K, R, tmp_si);
         multTransB(tmp_si, K, tmp_ss);
 
-        add(tmp_ss, tmp_ss2, P);
+        addEquals(P, tmp_ss);
 
         return input_vars;
     }
