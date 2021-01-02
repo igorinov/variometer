@@ -31,9 +31,9 @@ public class CalibrationActivity extends WearableActivity {
     VibrationEffect effect;
     SensorManager manager;
     Sensor accelerometer;
-    float[] scale;
-    float[] bias;
-    float[] data;
+    double[] scale;
+    double[] bias;
+    double[] data;
     int calibrationIndex = 0;
     AccelerationListener listener;
     InternalMessageHandler handler;
@@ -61,7 +61,11 @@ public class CalibrationActivity extends WearableActivity {
             if (calibrationIndex >= MAX_POINTS)
                 return;
 
-            System.arraycopy(arg0.values, 0, data, calibrationIndex * 3, 3);
+            int k;
+
+            for (k = 0; k < 3; k += 1 ) {
+                data[calibrationIndex * 3 + k] = arg0.values[k];
+            }
         }
     }
 
@@ -87,14 +91,14 @@ public class CalibrationActivity extends WearableActivity {
         bias[2] = 0;
         Variometer.biasUpdate(bias, scale, data, calibrationIndex * 3);
         SharedPreferences.Editor editor = pref.edit();
-        if (Float.isNaN(bias[0]) || Float.isNaN(bias[1]) || Float.isNaN(bias[2]))
+        if (Double.isNaN(bias[0]) || Double.isNaN(bias[1]) || Double.isNaN(bias[2]))
             calibrated = false;
-        editor.putFloat("bias_x", bias[0]);
-        editor.putFloat("bias_y", bias[1]);
-        editor.putFloat("bias_z", bias[2]);
-        editor.putFloat("scale_x", scale[0]);
-        editor.putFloat("scale_y", scale[1]);
-        editor.putFloat("scale_z", scale[2]);
+        editor.putFloat("bias_x", (float) bias[0]);
+        editor.putFloat("bias_y", (float) bias[1]);
+        editor.putFloat("bias_z", (float) bias[2]);
+        editor.putFloat("scale_x", (float) (scale[0] - 1.0));
+        editor.putFloat("scale_y", (float) (scale[1] - 1.0));
+        editor.putFloat("scale_z", (float) (scale[2] - 1.0));
         editor.putBoolean("calibrated", calibrated);
         editor.apply();
         returnResult(RESULT_OK);
@@ -151,12 +155,15 @@ public class CalibrationActivity extends WearableActivity {
         manager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerometer = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
-        scale = new float[3];
-        bias = new float[3];
+        scale = new double[3];
+        bias = new double[3];
         bias[0] = 0;
         bias[1] = 0;
         bias[2] = 0;
-        data = new float[MAX_POINTS * 3];
+        scale[0] = 1;
+        scale[1] = 1;
+        scale[2] = 1;
+        data = new double[MAX_POINTS * 3];
         //handler.sendEmptyMessageDelayed(73, 1000);
     }
 }

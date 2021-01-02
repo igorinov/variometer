@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Variometer</string>
+    <string name="app_name" translatable="false">Variometer</string>
     <string name="app_description">Vertical speed indicator</string>
     <string name="app_copyright">© Ivan Gorinov, 2012</string>
     <string name="home_page">http://igorinov.com/android/variometer</string>
@@ -28,10 +28,15 @@
     <string name="label_sigma_h">Altitude, m</string>
     <string name="label_sigma_a">Acceleration, m/s²</string>
     <string name="bias_a">Accelerometer bias correction</string>
+    <string name="scale_a">Accelerometer scale correction</string>
     <string name="bias_a_x">X axis</string>
     <string name="bias_a_y">Y axis</string>
     <string name="bias_a_z">Z axis</string>
-    <string name="descr_bias_a">Accelerometer bias is specified for each axis, in m/s²</string>
+    <string name="scale_a_x">X axis</string>
+    <string name="scale_a_y">Y axis</string>
+    <string name="scale_a_z">Z axis</string>
+    <string name="descr_bias_a">Accelerometer bias for each axis, in m/s²</string>
+    <string name="descr_scale_a">Accelerometer scale correction</string>
     <string name="keep_screen_on">Keep screen on</string>
     <string name="defaults">Reset Defaults</string>
     <string name="save">Save</string>
@@ -45,6 +50,25 @@
 
     <string name="pref_title_scale_limit">Scale limit</string>
     <string name="pref_default_scale_limit">5</string>
+
+    <string name="calibration">Calibration</string>
+    <string name="calibration_step0">For best results, the acceleration sensor needs to be calibrated. This does not affect sensor output for other applications.</string>
+    <string name="calibration_step0a">Stable position is more important than exact orientation. For example, if you have cradle that holds the device in a tilted position, use it instead of trying to hold it perfectly vertical by hand.</string>
+    <string name="calibration_display_up">On the table, display facing UP</string>
+    <string name="calibration_display_down">On the table, display facing DOWN</string>
+    <string name="calibration_upright">On a stand, or leaning on a stable object, approximately UPRIGHT</string>
+    <string name="calibration_upside_down">On a stand, or leaning on a stable object, approximately UPSIDE DOWN</string>
+    <string name="calibration_left_side_down">On a stand, or leaning on a stable object, LEFT side down</string>
+    <string name="calibration_right_side_down">On a stand, or leaning on a stable object, RIGHT side down</string>
+    <string name="calibration_next">In 5 seconds after clicking "Next", leave the device in the following orientation:</string>
+    <string name="next">Next</string>
+    <string name="done">Done</string>
+    <string name="skip_calibration">Skip calibration</string>
+    <string name="next_step">Next step</string>
+    <string name="accelerometer_calibration">Accelerometer calibration</string>
+    <string name="reading_sensor_data">READING</string>
+    <string name="processing_sensor_data">PROCESSING</string>
+    <string name="too_much_noise">Too much noise in sensor data"</string>
 
     <string-array name="pref_unit_list_titles">
         <item>m/s</item>

@@ -116,6 +116,65 @@
         </TextView>
 
         <TextView
+            style="@style/Description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="2"
+            android:text="@string/descr_scale_a" >
+        </TextView>
+
+        <TextView
+            android:labelFor="@id/scale_a_x"
+            style="@style/Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/scale_a_x" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/scale_a_x"
+            style="@style/EditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="6"
+            android:inputType="number">
+        </TextView>
+
+        <TextView
+            android:labelFor="@id/scale_a_y"
+            style="@style/Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/scale_a_y" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/scale_a_y"
+            style="@style/EditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="6"
+            android:inputType="number">
+        </TextView>
+
+        <TextView
+            android:labelFor="@id/scale_a_z"
+            style="@style/Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/scale_a_z" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/scale_a_z"
+            style="@style/EditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="6"
+            android:inputType="number">
+        </TextView>
+
+        <TextView
             style="@style/GroupLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

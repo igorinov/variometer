@@ -16,6 +16,10 @@
         android:title="@string/filter_parameters">
     </item>
     <item
+        android:id="@+id/accelerometer_calibration"
+        android:title="@string/accelerometer_calibration">
+    </item>
+    <item
         android:id="@+id/defaults"
         android:title="@string/defaults">
     </item>

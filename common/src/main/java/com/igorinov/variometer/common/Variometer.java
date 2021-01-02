@@ -41,7 +41,7 @@ public class Variometer {
     /*  Values for state covariance initialization, with
      *  high confidence in zero vertical speed on startup
      */
-    static final double[] p_init = { 1000.0, 0.01, 10.0 };
+    static final double[] p_init = {10000.0, 0.01, 10.0};
 
     boolean knownRotation = false;
     boolean knownAltitude = false;
@@ -186,20 +186,20 @@ public class Variometer {
             acc[2] = (dataA[2] - biasA[2]) * scaleA[2];
             acc[3] = 0;
 
-            q1[0] = - q[0];
-            q1[1] = - q[1];
-            q1[2] = - q[2];
+            q1[0] = -q[0];
+            q1[1] = -q[1];
+            q1[2] = -q[2];
             q1[3] = q[3];
 
             System.arraycopy(q, 0, v, 0, 4);
             HamiltonProduct(v, acc);
             HamiltonProduct(v, q1);
 
-            if(arg0.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            if (arg0.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
                 input[1] = (v[2] - SensorManager.GRAVITY_EARTH);
             }
 
-            if(arg0.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
+            if (arg0.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
                 input[1] = v[2];
             }
 
@@ -222,7 +222,7 @@ public class Variometer {
             q[2] = event.values[2];
             q[3] = event.values[3];
             if (realPartMayBeMissing) {
-                // Compute real part of a unit quaternion from the other 3 components
+                // Compute the real part of a unit quaternion from the 3 imaginary parts
                 x = q[0];
                 y = q[1];
                 z = q[2];
@@ -259,7 +259,7 @@ public class Variometer {
             filter.setPeriod(sensorPeriod);
             filter.setProcessNoise(sensorPeriod, sigma_ivsi * sigma_ivsi);
 
-            double[] r = { sigma_h, sigma_a };
+            double[] r = {sigma_h, sigma_a};
             filter.setMeasurementError(r);
             filter.initCovariance(p_init);
         } else {
@@ -279,7 +279,7 @@ public class Variometer {
             }
             filter.setPeriod(sensorPeriod);
             filter.setProcessNoise(sensorPeriod, sigma_vsi * sigma_vsi);
-            double[] r = { sigma_h };
+            double[] r = {sigma_h};
             filter.setMeasurementError(r);
         }
 
@@ -307,41 +307,41 @@ public class Variometer {
     /*
      *  Accelerometer bias estimation using gradient descent
      */
-    public static void biasUpdate(float[] bias, float[] scale, float[] data, int length) {
+    public static void biasUpdate(double[] bias, double[] scale, double[] data, int length) {
         /*
          *  lₖ² = c_x² (axₖ - b_x)² + c_y² (ayₖ - b_y)² + c_z² (azₖ - b_z)²
-         *  rₖ = lₖ² - g²
+         *  rₖ = lₖ - g
          *
          *  Minimize ∑r²ₖ by gradient descent:
-         *  ∂r²ₖ / ∂ b_x = 2 * (lₖ² - g²) * c_x² (2 * b_x - 2 * axₖ)
-         *  ∂r²ₖ / ∂ c_x = 2 * (lₖ² - g²) * 2 * (ax_k - b_x)²
+         *  ∂r²ₖ / ∂ b_x = cx² * (2 * bx - 2 * ax) * (lₖ - g) / lₖ
+         *  ∂r²ₖ / ∂ c_x = 2 * cx * (ax - bx)² * (lₖ - g) / lₖ
          */
 
+        int N = 4096;
         int i, k;
-
-        float ax, ay, az;
-        float cx, cy, cz;
-        float x, y, z;
-        float gx, gy, gz;
-        float gcx, gcy, gcz;
-        float aa, g;
-        float r_l = 1.0f / length;
+        double ax, ay, az;
+        double cx, cy, cz;
+        double x, y, z;
+        double gbx, gby, gbz;
+        double gcx, gcy, gcz;
+        double ll, l, g;
+        double r_l = 1.0f / length;
 
         // Learning rate for bias
-        float lr = 1 / 8192.0f;
+        double lr = 3e-3;
 
         // Learning rate for scale
-        float lr_s = 1 / 65536.0f;
+        double lr_s = 1e-3;
 
         g = SensorManager.GRAVITY_EARTH;
         cx = 1;
         cy = 1;
         cz = 1;
 
-        for (i = 0; i < 1024; i += 1) {
-            gx = 0;
-            gy = 0;
-            gz = 0;
+        for (i = 0; i < N; i += 1) {
+            gbx = 0;
+            gby = 0;
+            gbz = 0;
             gcx = 0;
             gcy = 0;
             gcz = 0;
@@ -352,36 +352,32 @@ public class Variometer {
                 az = data[k + 2];
 
                 // Corrected acceleration vector
-                x = (ax - bias[0]) * (cx * cx);
-                y = (ay - bias[1]) * (cy * cy);
-                z = (az - bias[2]) * (cz * cz);
+                x = (ax - bias[0]) * cx;
+                y = (ay - bias[1]) * cy;
+                z = (az - bias[2]) * cz;
 
                 // Squared length of the corrected acceleration vector
-                aa = x * x + y * y + z * z;
+                ll = x * x + y * y + z * z;
+                l = Math.sqrt(ll);
 
                 // Update the bias gradient vector
-                gx += 4 * (g * g - aa) * x;
-                gy += 4 * (g * g - aa) * y;
-                gz += 4 * (g * g - aa) * z;
-
-                // Bias-corrected acceleration vector
-                x = ax - bias[0];
-                y = ay - bias[1];
-                z = az - bias[2];
+                gbx += cx * cx * 2 * (bias[0] - ax) * (l - g) / l;
+                gby += cy * cy * 2 * (bias[1] - ay) * (l - g) / l;
+                gbz += cz * cz * 2 * (bias[2] - az) * (l - g) / l;
 
                 // Update the scale gradient vector
-                gcx += 4 * (aa - g * g) * x * x;
-                gcy += 4 * (aa - g * g) * y * y;
-                gcz += 4 * (aa - g * g) * z * z;
+                gcx += 2 * cx * (ax - bias[0]) * (ax - bias[0]) * (l - g) / l;
+                gcy += 2 * cy * (ay - bias[1]) * (ay - bias[1]) * (l - g) / l;
+                gcz += 2 * cz * (az - bias[2]) * (az - bias[2]) * (l - g) / l;
             }
-            gx *= r_l;
-            gy *= r_l;
-            gz *= r_l;
+            gbx *= r_l;
+            gby *= r_l;
+            gbz *= r_l;
 
             // Update bias vector
-            bias[0] -= gx * lr;
-            bias[1] -= gy * lr;
-            bias[2] -= gz * lr;
+            bias[0] -= gbx * lr;
+            bias[1] -= gby * lr;
+            bias[2] -= gbz * lr;
 
             gcx *= r_l;
             gcy *= r_l;

@@ -1,17 +1,18 @@
 <resources>
+    <string name="ivsi" translatable="false">IVSI</string>
+
+    <string-array name="pref_sensor_sets" translatable="false">
+        <item>VSI</item>
+        <item>IVSI</item>
+    </string-array>
+
     <string name="climb">UP</string>
     <string name="descent">DOWN</string>
-    <string name="ivsi">IVSI</string>
 
     <string-array name="pref_unit_list_titles">
         <item>m/s</item>
         <item>knots</item>
         <item>100ft/min</item>
-    </string-array>
-
-    <string-array name="pref_sensor_sets">
-        <item>VSI</item>
-        <item>IVSI</item>
     </string-array>
 
 </resources>

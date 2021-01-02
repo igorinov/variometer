@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.igorinov.variometer">
 
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <uses-feature
@@ -37,6 +38,15 @@
             android:name=".FilterParametersActivity"
             android:label="@string/filter_parameters"
             android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.igorinov.variometer.MainActivity" />
+        </activity>
+        <activity
+            android:name=".CalibrationActivity"
+            android:label="@string/accelerometer_calibration"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="nosensor">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.igorinov.variometer.MainActivity" />

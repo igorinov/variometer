@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     double[] state = new double[3];
     float[] dataA = new float[3];
     float[] biasA = new float[3];
+    double[] scaleA = { 1, 1, 1 };
     double[] acc = new double[4];
     double[] q = new double[4];
     double[] q1 = new double[4];
@@ -68,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
     boolean knownRotation = false;
     boolean knownAltitude = false;
     boolean flying = false;
-    boolean beepEnabled = true;
+    boolean beepEnabled = false;
     float vspeed = 0;
     int t = 0;
 
@@ -79,13 +80,14 @@ public class MainActivity extends AppCompatActivity {
     boolean keep_on = true;
 
     static final short REQUEST_CODE_PREFERENCES = 16384;
+    static final short REQUEST_CODE_CALIBRATION = 32767;
     static final int TYPE_VSI = 0;
     static final int TYPE_IVSI = 1;
 
     /*  Values for state covariance initialization, with
      *  high confidence in zero vertical speed on startup
      */
-    static final double[] p_init = { 1000.0, 0.01, 10.0 };
+    static final double[] p_init = { 10000.0, 0.01, 10.0 };
 
     static final float[] vsiUnits = {1, 0.51444f, 0.508f};
     String[] vsiUnitNames = null;
@@ -101,7 +103,6 @@ public class MainActivity extends AppCompatActivity {
         double[] partAmpl;
         double v0 = 0;
         double t = 0;
-        int counter = 0;
         int periods = 0;
         int nPartials = 0;
         double max_sample = 0;
@@ -332,9 +333,9 @@ public class MainActivity extends AppCompatActivity {
 
             System.arraycopy(arg0.values, 0, dataA, 0, 3);
 
-            acc[0] = dataA[0] - biasA[0];
-            acc[1] = dataA[1] - biasA[1];
-            acc[2] = dataA[2] - biasA[2];
+            acc[0] = (dataA[0] - biasA[0]) * scaleA[0];
+            acc[1] = (dataA[1] - biasA[1]) * scaleA[1];
+            acc[2] = (dataA[2] - biasA[2]) * scaleA[2];
             acc[3] = 0;
 
             q1[0] = - q[0];
@@ -412,6 +413,11 @@ public class MainActivity extends AppCompatActivity {
                 recreate();
                 break;
 
+            case R.id.accelerometer_calibration:
+                intent = new Intent(this, CalibrationActivity.class);
+                startActivityForResult(intent, REQUEST_CODE_CALIBRATION);
+                break;
+
             case R.id.indicator_settings:
                 intent = new Intent(this, IndicatorSettingsActivity.class);
                 startActivityForResult(intent, REQUEST_CODE_PREFERENCES);
@@ -481,6 +487,9 @@ public class MainActivity extends AppCompatActivity {
             biasA[0] = pref.getFloat(FilterParametersActivity.PREF_BIAS_X, biasA[0]);
             biasA[1] = pref.getFloat(FilterParametersActivity.PREF_BIAS_Y, biasA[1]);
             biasA[2] = pref.getFloat(FilterParametersActivity.PREF_BIAS_Z, biasA[2]);
+            scaleA[0] = pref.getFloat(FilterParametersActivity.PREF_SCALE1_X, 0) + 1.0;
+            scaleA[1] = pref.getFloat(FilterParametersActivity.PREF_SCALE1_Y, 0) + 1.0;
+            scaleA[2] = pref.getFloat(FilterParametersActivity.PREF_SCALE1_Z, 0) + 1.0;
         } catch (ClassCastException exception) {
             pref_valid = false;
         }
@@ -500,6 +509,9 @@ public class MainActivity extends AppCompatActivity {
             editor.putFloat(FilterParametersActivity.PREF_BIAS_X, biasA[0]);
             editor.putFloat(FilterParametersActivity.PREF_BIAS_Y, biasA[1]);
             editor.putFloat(FilterParametersActivity.PREF_BIAS_Z, biasA[2]);
+            editor.putFloat(FilterParametersActivity.PREF_SCALE1_X, (float) (scaleA[0] - 1.0));
+            editor.putFloat(FilterParametersActivity.PREF_SCALE1_Y, (float) (scaleA[1] - 1.0));
+            editor.putFloat(FilterParametersActivity.PREF_SCALE1_Z, (float) (scaleA[2] - 1.0));
             editor.apply();
         }
 
@@ -571,6 +583,9 @@ public class MainActivity extends AppCompatActivity {
             biasA[0] = pref.getFloat(FilterParametersActivity.PREF_BIAS_X, biasA[0]);
             biasA[1] = pref.getFloat(FilterParametersActivity.PREF_BIAS_Y, biasA[1]);
             biasA[2] = pref.getFloat(FilterParametersActivity.PREF_BIAS_Z, biasA[2]);
+            scaleA[0] = pref.getFloat(FilterParametersActivity.PREF_SCALE1_X, 0) + 1.0;
+            scaleA[1] = pref.getFloat(FilterParametersActivity.PREF_SCALE1_Y, 0) + 1.0;
+            scaleA[2] = pref.getFloat(FilterParametersActivity.PREF_SCALE1_Z, 0) + 1.0;
         } catch (ClassCastException exception) {
             // ignore this exception
         }

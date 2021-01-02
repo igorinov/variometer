@@ -1,8 +1,8 @@
 # Variometer
 
-[Project page](https://igorinov.com/android/variometer/)
+[Project page](https://altimeter.info/android/variometer/)
 
-[Simulation experiment](https://igorinov.com/android/variometer/howitworks.html)
+[Simulation experiment](https://altimeter.info/android/variometer/howitworks.html)
 
 Roger Labbe's [book](https://github.com/rlabbe/Kalman-and-Bayesian-Filters-in-Python) and [filterpy project](https://pypi.org/project/filterpy/) were used as a reference.
 

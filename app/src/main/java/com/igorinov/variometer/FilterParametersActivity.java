@@ -17,6 +17,9 @@ public class FilterParametersActivity extends SettingsActivity {
     static public String PREF_BIAS_X = "bias_x";
     static public String PREF_BIAS_Y = "bias_y";
     static public String PREF_BIAS_Z = "bias_z";
+    static public String PREF_SCALE1_X = "scale1p_x";
+    static public String PREF_SCALE1_Y = "scale1p_y";
+    static public String PREF_SCALE1_Z = "scale1p_z";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -31,5 +34,8 @@ public class FilterParametersActivity extends SettingsActivity {
         initEditFloat(R.id.bias_a_x, PREF_BIAS_X, 0);
         initEditFloat(R.id.bias_a_y, PREF_BIAS_Y, 0);
         initEditFloat(R.id.bias_a_z, PREF_BIAS_Z, 0);
+        initEditFloat(R.id.scale_a_x, PREF_SCALE1_X, 0);
+        initEditFloat(R.id.scale_a_y, PREF_SCALE1_Y, 0);
+        initEditFloat(R.id.scale_a_z, PREF_SCALE1_Z, 0);
     }
 }

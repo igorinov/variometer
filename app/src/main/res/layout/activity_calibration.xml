@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/about_root"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/text_next"
+        android:layout_width="match_parent"
+        android:layout_height="36pt"
+        android:layout_margin="6pt"
+        android:textSize="8pt" >
+    </TextView>
+
+    <ImageView
+        android:id="@+id/image_phone"
+        android:layout_width="108pt"
+        android:layout_height="54pt"
+        android:layout_gravity="center"/>
+
+    <TextView
+        android:id="@+id/text_step"
+        android:layout_width="match_parent"
+        android:layout_height="36pt"
+        android:layout_margin="6pt"
+        android:textSize="10pt" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/text_counter"
+        android:layout_width="match_parent"
+        android:layout_height="36pt"
+        android:layout_margin="6pt"
+        android:textAlignment="center"
+        android:textSize="24pt" >
+    </TextView>
+
+    <Button
+        android:id="@+id/button_next"
+        android:layout_width="match_parent"
+        android:layout_height="36pt"
+        android:text="@string/next_step"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/button_skip"
+        android:layout_width="match_parent"
+        android:layout_height="24pt"
+        android:text="@string/skip_calibration"
+        android:textAllCaps="false" />
+
+</LinearLayout>
