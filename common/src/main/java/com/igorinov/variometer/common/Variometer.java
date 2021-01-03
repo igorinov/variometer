@@ -14,7 +14,6 @@ public class Variometer {
     PressureListener listenerP;
     AccelerationListener listenerA;
     RotationListener listenerR;
-//    VerticalSpeedIndicator vsi;
 
     Sensor pressureSensor;
     Sensor rotationSensor;

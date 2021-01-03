@@ -11,6 +11,7 @@ import org.ejml.interfaces.linsol.LinearSolverDense;
 
 import static org.ejml.dense.row.CommonOps_DDRM.add;
 import static org.ejml.dense.row.CommonOps_DDRM.addEquals;
+import static org.ejml.dense.row.CommonOps_DDRM.extractRow;
 import static org.ejml.dense.row.CommonOps_DDRM.mult;
 import static org.ejml.dense.row.CommonOps_DDRM.multAdd;
 import static org.ejml.dense.row.CommonOps_DDRM.multTransA;
@@ -31,19 +32,20 @@ public class KalmanFilter {
     Matrix x;           // State estimation
     Matrix x_prior;     // Prior state estimation
     Matrix y;           // Residual (Innovation)
-    Matrix H, H_T;      // Measurement function (Observation model)
-    Matrix F, F_T;      // State transition model
+    Matrix H, H_i;      // Measurement function (Observation model)
+    Matrix F;           // State transition model
     Matrix B = null;    // Control function
     Matrix Q;           // Process noise covariance
     Matrix R;           // Measurement Uncertainty
     Matrix S, S_inv;    // System Uncertainty
-    Matrix K, K_T;      // Kalman gain
+    Matrix K, K_i;      // Kalman gain
     Matrix P;           // Covariance
     Matrix P_prior;     // Prior Covariance
 
     // Temporary matrices are only allocated once
+    Matrix PHT, PHT1;
     Matrix IMKH;
-    Matrix tmp_s;
+    Matrix tmp_11, tmp_s1;
     Matrix tmp_ss, tmp_si, tmp_is;
 
     private LinearSolverDense<DMatrixRMaj> solver;
@@ -60,9 +62,12 @@ public class KalmanFilter {
         P = new Matrix(state_vars, state_vars);
         setIdentity(P);
         K = new Matrix(state_vars, input_vars);
-        K_T = new Matrix(input_vars, state_vars);
+        K_i = new Matrix(state_vars, 1);
+        PHT = new Matrix(state_vars, input_vars);
+        PHT1 = new Matrix(state_vars, 1);
         IMKH = new Matrix(state_vars, state_vars);
-        tmp_s = new Matrix(state_vars, 1);
+        tmp_11 = new Matrix(1, 1);
+        tmp_s1 = new Matrix(state_vars, 1);
         tmp_ss = new Matrix(state_vars, state_vars);
         tmp_si = new Matrix(state_vars, input_vars);
         tmp_is = new Matrix(input_vars, state_vars);
@@ -75,12 +80,10 @@ public class KalmanFilter {
         H.set(0, 0, 1.0);
         if (state_vars == 3 && input_vars == 2)
             H.set(1, 2, 1.0);
-        H_T = new Matrix(state_vars, input_vars);
-        transpose(H, H_T);
+        H_i = new Matrix(1, state_vars);
         R = new Matrix(input_vars, input_vars);
         S = new Matrix(input_vars, input_vars);
         F = new Matrix(state_vars, state_vars);
-        F_T = new Matrix(state_vars, state_vars);
         Q = new Matrix(state_vars, state_vars);
 
         solver = LinearSolverFactory_DDRM.symmPosDef(state_vars);
@@ -110,8 +113,6 @@ public class KalmanFilter {
             F.set(0, 2, dt * dt * 0.5);
             F.set(1, 2, dt);
         }
-
-        transpose(F, F_T);
 
         return 0;
     }
@@ -182,6 +183,7 @@ public class KalmanFilter {
             System.arraycopy(control, 0, u.data, 0, control_vars);
             multAdd(B, u, x_prior);
         }
+        x.set(x_prior);
 
         //  Prior Covariance
         //  P⁻ = FPF⸆ + Q
@@ -189,6 +191,7 @@ public class KalmanFilter {
         mult(F, P, tmp_ss);
         multTransB(tmp_ss, F, P_prior);
         addEquals(P_prior, Q);
+        P.set(P_prior);
 
         return state_vars;
     }
@@ -200,29 +203,27 @@ public class KalmanFilter {
         //  Residual
         //  y = z - Hx⁻
 
-        mult(H, x_prior, y);
+        mult(H, x, y);
         subtract(z, y, y);
 
         //  System uncertainty
         //  S = HP⁻H⸆ + R
 
-        mult(H, P_prior, tmp_si);
-        multTransB(tmp_si, H, S);
-        addEquals(S, R);
+        S.set(R);
+        multTransB(P, H, PHT);
+        multAdd(H, PHT, S);
 
         //  Kalman gain
         //  K = P⁻H⸆S⁻¹
 
         if (!solver.setA(S)) return 0;
         solver.invert(S_inv);
-        multTransA(H, S_inv, tmp_si);
-        mult(P_prior, tmp_si, K);
+        mult(PHT, S_inv, K);
 
         //  State Update
         //  x = x⁻ + Ky
 
-        mult(K, y, x);
-        addEquals(x, x_prior);
+        multAdd(K, y, x);
 
         //  Covariance Update
         //  P = (I-KH)P⁻(I-KH)⸆ + KRK⸆
@@ -230,13 +231,63 @@ public class KalmanFilter {
         setIdentity(IMKH);
         mult(K, H, tmp_ss);
         subtractEquals(IMKH, tmp_ss);
-
-        mult(IMKH, P_prior, tmp_ss);
+        mult(IMKH, P, tmp_ss);
         multTransB(tmp_ss, IMKH, P);
-
         mult(K, R, tmp_si);
         multTransB(tmp_si, K, tmp_ss);
+        addEquals(P, tmp_ss);
 
+        return input_vars;
+    }
+
+    public int filterUpdateSequential(int i, double z_i) {
+        assert (i < input_vars);
+        z.set(i, 0, z_i);
+        extractRow(H, i, H_i);
+        double R_ii = R.get(i, i);
+        int j;
+
+        //  Residual
+        //  yᵢ = zᵢ - Hᵢx⁻
+
+        mult(H_i, x, tmp_11);
+        double y_i = z_i - tmp_11.get(0, 0);
+
+        //  System uncertainty
+        //  Sᵢ = HᵢP⁻Hᵢ⸆ + Rᵢ
+        //  In sequential processing, Sᵢ is a scalar
+
+        multTransB(P, H_i, PHT1);
+        mult(H_i, PHT1, tmp_11);
+        double S_i = tmp_11.get(0, 0) + R_ii;
+        if (S_i == 0)
+            return 0;
+
+        //  Kalman gain
+        //  Kᵢ = P⁻Hᵢ⸆S⁻¹
+
+        scale(1.0 / S_i, PHT1, K_i);
+
+        // Store the Kalman gain component
+        for (j = 0; j < state_vars; j += 1) {
+            K.set(j, i, K_i.get(j, 0));
+        }
+
+        //  State Update
+        //  x = x⁻ + Kᵢyᵢ
+
+        tmp_11.set(0, 0, y_i);
+        multAdd(K_i, tmp_11, x);
+
+        //  Covariance Update
+        //  P = (I-KᵢHᵢ)P⁻(I-KᵢHᵢ)⸆ + KᵢRᵢKᵢ⸆
+
+        setIdentity(IMKH);
+        mult(K_i, H_i, tmp_ss);
+        subtractEquals(IMKH, tmp_ss);
+        mult(IMKH, P, tmp_ss);
+        multTransB(tmp_ss, IMKH, P);
+        multTransB(R_ii, K_i, K_i, tmp_ss);
         addEquals(P, tmp_ss);
 
         return input_vars;

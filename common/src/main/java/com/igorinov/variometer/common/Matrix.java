@@ -7,37 +7,31 @@ package com.igorinov.variometer.common;
 
 import org.ejml.data.DMatrixRMaj;
 
+import java.util.Arrays;
+
 public class Matrix extends DMatrixRMaj {
 
     public Matrix(int m, int n) {
         super(m, n);
     }
 
-    public void shiftUp(int count) {
-        int i, j;
+    public void zeroRows(int start, int end) {
+        Arrays.fill(data, start * numCols, end * numCols, 0);
+    }
 
+    public void shiftUp(int count) {
         if (count < numRows) {
             System.arraycopy(data, count * numCols, data, 0, (numRows - count) * numCols);
-            for (i = numRows - count; i < numRows; i += 1) {
-                for (j = 0; j < numCols; j += 1) {
-                    set(i, j, 0);
-                }
-            }
+            zeroRows(numRows - count, numRows);
         } else {
             zero();
         }
     }
 
     public void shiftDown(int count) {
-        int i, j;
-
         if (count < numRows) {
             System.arraycopy(data, 0, data, count * numCols, (numRows - count) * numCols);
-            for (i = 0; i < count; i += 1) {
-                for (j = 0; j < numCols; j += 1) {
-                    set(i, j, 0);
-                }
-            }
+            zeroRows(0, count);
         } else {
             zero();
         }

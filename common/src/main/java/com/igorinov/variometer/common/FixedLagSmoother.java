@@ -6,6 +6,7 @@
 package com.igorinov.variometer.common;
 
 import static org.ejml.dense.row.CommonOps_DDRM.mult;
+import static org.ejml.dense.row.CommonOps_DDRM.multTransA;
 import static org.ejml.dense.row.CommonOps_DDRM.subtract;
 import static org.ejml.dense.row.CommonOps_DDRM.transpose;
 
@@ -41,7 +42,7 @@ public class FixedLagSmoother extends KalmanFilter {
             X.set(0, j, x_prior.get(j));
         }
 
-        mult(H_T, S_inv, HTSI);
+        multTransA(H, S_inv, HTSI);
 
         mult(K, H, tmp_ss);
         subtract(F, tmp_ss, F_LH);
@@ -58,9 +59,9 @@ public class FixedLagSmoother extends KalmanFilter {
             mult(Ps, F_LH, tmp_ss);
             Ps.set(tmp_ss);
 
-            mult(K, y, tmp_s);
+            mult(K, y, tmp_s1);
             for (j = 0; j < state_vars; j += 1) {
-                X.add(i, j, tmp_s.get(j));
+                X.add(i, j, tmp_s1.get(j));
             }
 
         }
