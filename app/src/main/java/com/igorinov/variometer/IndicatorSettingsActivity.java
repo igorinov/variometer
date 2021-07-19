@@ -13,7 +13,6 @@ public class IndicatorSettingsActivity extends SettingsActivity {
     static public String PREF_TYPE = "filter_type";
     static public String PREF_UNIT_INDEX = "unit_index";
     static public String PREF_KEEP_SCREEN = "keep_screen";
-    static public String PREF_SOUND_ENABLE = "sound_enable";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

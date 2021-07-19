@@ -6,7 +6,17 @@
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/text_next"
+        android:id="@+id/text_note"
+        android:layout_width="match_parent"
+        android:layout_height="54pt"
+        android:layout_margin="3pt"
+        android:padding="3pt"
+        android:background="@drawable/red_frame"
+        android:textSize="7pt" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/text_instruction"
         android:layout_width="match_parent"
         android:layout_height="36pt"
         android:layout_margin="6pt"
@@ -20,9 +30,9 @@
         android:layout_gravity="center"/>
 
     <TextView
-        android:id="@+id/text_step"
+        android:id="@+id/text_device_orientation"
         android:layout_width="match_parent"
-        android:layout_height="36pt"
+        android:layout_height="24pt"
         android:layout_margin="6pt"
         android:textSize="10pt" >
     </TextView>
@@ -30,16 +40,16 @@
     <TextView
         android:id="@+id/text_counter"
         android:layout_width="match_parent"
-        android:layout_height="36pt"
+        android:layout_height="24pt"
         android:layout_margin="6pt"
         android:textAlignment="center"
-        android:textSize="24pt" >
+        android:textSize="18pt" >
     </TextView>
 
     <Button
         android:id="@+id/button_next"
         android:layout_width="match_parent"
-        android:layout_height="36pt"
+        android:layout_height="24pt"
         android:text="@string/next_step"
         android:textAllCaps="false" />
 

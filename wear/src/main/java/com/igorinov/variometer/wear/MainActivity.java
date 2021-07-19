@@ -21,8 +21,8 @@ public class MainActivity extends WearableActivity {
     private VerticalSpeedIndicator vsiView;
     static final int REQUEST_CODE_ABOUT = 1;
     static final int REQUEST_CODE_CALIBRATION = 2;
-    float[] scaleA = { 1f, 1f, 1f };
-    float[] biasA = new float[3];
+    double[] scaleA = { 1.0, 1.0, 1.0 };
+    double[] biasA = new double[3];
     boolean calibrated = false;
 
 
@@ -112,7 +112,7 @@ public class MainActivity extends WearableActivity {
         setContentView(R.layout.activity_main);
 
         pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        variometer = new Variometer(true);
+        variometer = new Variometer(true, 25);
         vsiView = findViewById(R.id.vsi);
 
         // Enables Always-on
@@ -129,13 +129,13 @@ public class MainActivity extends WearableActivity {
             biasA[0] = pref.getFloat("bias_x", 0);
             biasA[1] = pref.getFloat("bias_y", 0);
             biasA[2] = pref.getFloat("bias_z", 0);
-            scaleA[0] = pref.getFloat("scale_x", 1);
-            scaleA[1] = pref.getFloat("scale_y", 1);
-            scaleA[2] = pref.getFloat("scale_z", 1);
+            scaleA[0] = pref.getFloat("scale_x", 0) + 1.0;
+            scaleA[1] = pref.getFloat("scale_y", 0) + 1.0;
+            scaleA[2] = pref.getFloat("scale_z", 0) + 1.0;
         } else {
             startCalibration();
         }
-        variometer.setAccelerometerBias(biasA, scaleA);
+        variometer.setAccelerometerCorrection(biasA, scaleA);
         variometer.start(this);
     }
 

@@ -43,6 +43,14 @@
                 android:value="com.igorinov.variometer.MainActivity" />
         </activity>
         <activity
+            android:name=".SoundSettingsActivity"
+            android:label="@string/sound_settings"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.igorinov.variometer.MainActivity" />
+        </activity>
+        <activity
             android:name=".CalibrationActivity"
             android:label="@string/accelerometer_calibration"
             android:parentActivityName=".MainActivity"

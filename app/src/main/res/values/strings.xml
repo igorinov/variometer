@@ -52,15 +52,15 @@
     <string name="pref_default_scale_limit">5</string>
 
     <string name="calibration">Calibration</string>
-    <string name="calibration_step0">For best results, the acceleration sensor needs to be calibrated. This does not affect sensor output for other applications.</string>
-    <string name="calibration_step0a">Stable position is more important than exact orientation. For example, if you have cradle that holds the device in a tilted position, use it instead of trying to hold it perfectly vertical by hand.</string>
+    <string name="calibration_step0">For best results, the acceleration sensor needs to be calibrated. Calibration in this app does not affect sensor readings in other apps.</string>
+    <string name="calibration_step0a">Steady support is more important than correct orientation. If you have a stand that holds the device in a tilted position, use the stand instead of holding the device by hand.</string>
     <string name="calibration_display_up">On the table, display facing UP</string>
     <string name="calibration_display_down">On the table, display facing DOWN</string>
     <string name="calibration_upright">On a stand, or leaning on a stable object, approximately UPRIGHT</string>
     <string name="calibration_upside_down">On a stand, or leaning on a stable object, approximately UPSIDE DOWN</string>
     <string name="calibration_left_side_down">On a stand, or leaning on a stable object, LEFT side down</string>
     <string name="calibration_right_side_down">On a stand, or leaning on a stable object, RIGHT side down</string>
-    <string name="calibration_next">In 5 seconds after clicking "Next", leave the device in the following orientation:</string>
+    <string name="calibration_next">In 5 seconds after clicking \'%1$s\', leave the device in the following orientation:</string>
     <string name="next">Next</string>
     <string name="done">Done</string>
     <string name="skip_calibration">Skip calibration</string>
@@ -69,6 +69,19 @@
     <string name="reading_sensor_data">READING</string>
     <string name="processing_sensor_data">PROCESSING</string>
     <string name="too_much_noise">Too much noise in sensor data"</string>
+    <string name="description_latitude">Latitude improves local gravity estimation</string>
+    <string name="noise_density_a">Accelerometer, µg/√Hz</string>
+    <string name="descr_noise_density">Noise density</string>
+    <string name="label_sigma_p">Pressure, hPa</string>
+    <string name="sound_settings">Sound settings</string>
+    <string name="sound_start_above">Start above</string>
+    <string name="sound_stop_below">Stop below</string>
+    <string name="sound_stop_above">Stop above</string>
+    <string name="sound_start_below">Start below</string>
+    <string name="sound_decay">Sound decay</string>
+    <string name="descr_sound_decay">Make a string sound instead of beep</string>
+    <string name="const_alt_freq">Const. altitude frequency, Hz</string>
+    <string name="sound_partials">Number of partials</string>
 
     <string-array name="pref_unit_list_titles">
         <item>m/s</item>

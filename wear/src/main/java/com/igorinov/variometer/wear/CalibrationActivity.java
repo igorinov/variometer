@@ -85,11 +85,13 @@ public class CalibrationActivity extends WearableActivity {
     }
 
     private void optimize() {
+        double latitude = pref.getFloat("latitude", 45);
+        double g = Variometer.localGravity(latitude);
         boolean calibrated = true;
         bias[0] = 0;
         bias[1] = 0;
         bias[2] = 0;
-        Variometer.biasUpdate(bias, scale, data, calibrationIndex * 3);
+        Variometer.biasUpdate(bias, scale, data, calibrationIndex * 3, g);
         SharedPreferences.Editor editor = pref.edit();
         if (Double.isNaN(bias[0]) || Double.isNaN(bias[1]) || Double.isNaN(bias[2]))
             calibrated = false;

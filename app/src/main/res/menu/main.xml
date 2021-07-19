@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <item
-        android:id="@+id/enable_sound"
-        android:title="@string/enable_sound"
-        android:checkable="true">
-    </item>
-    <item
         android:id="@+id/indicator_settings"
         android:title="@string/indicator_settings"
         android:icon="@android:drawable/ic_menu_preferences"
         android:visible="true">
+    </item>
+    <item
+        android:id="@+id/sound_settings"
+        android:title="@string/sound_settings">
     </item>
     <item
         android:id="@+id/filter_parameters"

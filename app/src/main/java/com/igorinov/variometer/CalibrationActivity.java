@@ -1,5 +1,6 @@
 package com.igorinov.variometer;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
@@ -29,8 +30,9 @@ public class CalibrationActivity extends AppCompatActivity {
     private SharedPreferences pref;
     private Button buttonNext;
     private Button buttonSkip;
-    private TextView textStep;
-    private TextView textNext;
+    private TextView textNote;
+    private TextView textDeviceOrientation;
+    private TextView textInstruction;
     private TextView textCounter;
     private ImageView imagePhone;
     VibrationEffect effect;
@@ -43,6 +45,7 @@ public class CalibrationActivity extends AppCompatActivity {
     int positionIndex = 0;
     int pointSampleCounter;
     int delayCounter = 0;
+    double sampleRate = 0;
     boolean firstClick = true;
     AccelerationListener listener;
     InternalMessageHandler handler;
@@ -67,10 +70,13 @@ public class CalibrationActivity extends AppCompatActivity {
             R.drawable.phone_upsidedown,
             R.drawable.phone_rightsidedown
     };
+
     static String[] factoryCalibratedModels = {
             "Google", "Pixel 2",
             "Google", "Pixel 3",
+            "Google", "Pixel 3a",
             "Google", "Pixel 4",
+            "Google", "Pixel 4a",
             "Google", "Pixel 5",
     };
 
@@ -82,13 +88,15 @@ public class CalibrationActivity extends AppCompatActivity {
     private class OptimizationThread extends Thread {
         @Override
         public void run() {
+            double latitude = pref.getFloat(FilterParametersActivity.PREF_LATITUDE, 45);
+            double g = Variometer.localGravity(latitude);
             bias[0] = 0;
             bias[1] = 0;
             bias[2] = 0;
             scale[0] = 1;
             scale[1] = 1;
             scale[2] = 1;
-            Variometer.biasUpdate(bias, scale, data2, positionIndex * 3);
+            Variometer.biasUpdate(bias, scale, data2, positionIndex * 3, g);
 
             handler.sendEmptyMessage(MESSAGE_OPTIMIZATION_DONE);
         }
@@ -154,7 +162,7 @@ public class CalibrationActivity extends AppCompatActivity {
         var_y /= SAMPLES_PER_POSITION;
         var_z /= SAMPLES_PER_POSITION;
 
-        double eps = 0.01;
+        double eps = 0.5;
         if (var_x > eps || var_y > eps || var_z > eps) {
             return false;
         }
@@ -182,6 +190,7 @@ public class CalibrationActivity extends AppCompatActivity {
                 textCounter.setText(R.string.reading_sensor_data);
 
                 pointSampleCounter = 0;
+                sampleRate = 1.0 / accelerometer.getMinDelay();
                 manager.registerListener(listener, accelerometer, accelerometer.getMinDelay());
                 return;
             }
@@ -211,7 +220,7 @@ public class CalibrationActivity extends AppCompatActivity {
                     thread.start();
                     return;
                 }
-                textStep.setText(getString(string_ids[positionIndex]));
+                textDeviceOrientation.setText(getString(string_ids[positionIndex]));
                 imagePhone.setImageResource(picture_ids[positionIndex]);
                 buttonNext.setEnabled(true);
             }
@@ -227,7 +236,7 @@ public class CalibrationActivity extends AppCompatActivity {
         boolean calibrated = true;
         SharedPreferences.Editor editor = pref.edit();
         for (k = 0; k < 3; k += 1) {
-            if (Double.isNaN(bias[k]) || Math.abs(bias[k]) > 0.25) {
+            if (Double.isNaN(bias[k]) || Math.abs(bias[k]) > 0.5) {
                 calibrated = false;
                 break;
             }
@@ -274,8 +283,10 @@ public class CalibrationActivity extends AppCompatActivity {
     private void buttonClicked() {
         if (firstClick) {
             positionIndex = 0;
-            textNext.setText(getString(R.string.calibration_next));
-            textStep.setText(getString(string_ids[positionIndex]));
+            textNote.setText(getString(R.string.calibration_step0a));
+            textInstruction.setText(getString(R.string.calibration_next,
+                    getString(R.string.next_step)));
+            textDeviceOrientation.setText(getString(string_ids[positionIndex]));
             imagePhone.setImageResource(picture_ids[positionIndex]);
             firstClick = false;
         } else {
@@ -316,12 +327,14 @@ public class CalibrationActivity extends AppCompatActivity {
 
         buttonNext = findViewById(R.id.button_next);
         buttonSkip = findViewById(R.id.button_skip);
-        textStep = findViewById(R.id.text_step);
-        textNext = findViewById(R.id.text_next);
+        textDeviceOrientation = findViewById(R.id.text_device_orientation);
+        textNote = findViewById(R.id.text_note);
+        textInstruction = findViewById(R.id.text_instruction);
         textCounter = findViewById(R.id.text_counter);
         imagePhone = findViewById(R.id.image_phone);
 
-        textNext.setText(getString(R.string.calibration_step0));
+        textNote.setText(getString(R.string.calibration_step0));
+//        textInstruction.setText(getString(R.string.calibration_step0a));
 
         manager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerometer = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);

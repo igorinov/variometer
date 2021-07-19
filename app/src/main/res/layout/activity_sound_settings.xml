@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/options_root"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="2"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="2"
+            style="@style/GroupLabel"
+            android:text="@string/sound_settings" >
+        </TextView>
+
+        <TextView
+            android:labelFor="@id/const_alt_freq"
+            style="@style/Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/const_alt_freq" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/const_alt_freq"
+            style="@style/EditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="6"
+            android:gravity="right"
+            android:textAlignment="gravity"
+            android:inputType="number">
+        </TextView>
+
+        <TextView
+            android:labelFor="@id/sound_start_h"
+            style="@style/Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sound_start_above" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/sound_start_h"
+            style="@style/EditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="6"
+            android:gravity="right"
+            android:textAlignment="gravity"
+            android:inputType="number">
+        </TextView>
+
+        <TextView
+            android:labelFor="@id/sound_stop_h"
+            style="@style/Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sound_stop_below" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/sound_stop_h"
+            style="@style/EditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="6"
+            android:gravity="right"
+            android:textAlignment="gravity"
+            android:inputType="number">
+        </TextView>
+
+        <TextView
+            android:labelFor="@id/sound_stop_l"
+            style="@style/Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sound_stop_above" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/sound_stop_l"
+            style="@style/EditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="6"
+            android:gravity="right"
+            android:textAlignment="gravity"
+            android:inputType="number">
+        </TextView>
+
+        <TextView
+            android:labelFor="@id/sound_start_l"
+            style="@style/Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sound_start_below" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/sound_start_l"
+            style="@style/EditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="6"
+            android:gravity="right"
+            android:textAlignment="gravity"
+            android:inputType="number">
+        </TextView>
+
+        <TextView
+            android:labelFor="@id/enable_sound"
+            style="@style/Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/enable_sound">
+        </TextView>
+
+        <CheckBox
+            android:id="@+id/enable_sound"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/colorAccent">
+        </CheckBox>
+
+        <TextView
+            android:labelFor="@id/sound_decay"
+            style="@style/Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sound_decay">
+        </TextView>
+
+        <CheckBox
+            android:id="@+id/sound_decay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/colorAccent">
+        </CheckBox>
+
+        <TextView
+            style="@style/Description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="2"
+            android:text="@string/descr_sound_decay" >
+        </TextView>
+
+        <TextView
+            android:labelFor="@id/sound_partials"
+            style="@style/Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sound_partials" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/sound_partials"
+            style="@style/EditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="6"
+            android:gravity="right"
+            android:textAlignment="gravity"
+            android:inputType="number">
+        </TextView>
+
+    </GridLayout>
+</ScrollView>

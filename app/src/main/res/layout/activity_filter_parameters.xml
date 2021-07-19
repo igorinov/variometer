@@ -61,6 +61,31 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_columnSpan="2"
+            android:text="@string/description_latitude" >
+        </TextView>
+
+        <TextView
+            android:labelFor="@id/latitude"
+            style="@style/Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Latitude" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/latitude"
+            style="@style/EditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="6"
+            android:inputType="number">
+        </TextView>
+
+        <TextView
+            style="@style/Description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="2"
             android:text="@string/descr_bias_a" >
         </TextView>
 
@@ -191,15 +216,15 @@
         </TextView>
 
         <TextView
-            android:labelFor="@id/sigma_h"
+            android:labelFor="@id/sigma_p"
             style="@style/Label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/label_sigma_h" >
+            android:text="@string/label_sigma_p" >
         </TextView>
 
         <TextView
-            android:id="@+id/sigma_h"
+            android:id="@+id/sigma_p"
             style="@style/EditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -207,15 +232,23 @@
         </TextView>
 
         <TextView
-            android:labelFor="@id/sigma_a"
-            style="@style/Label"
-            android:layout_width="wrap_content"
+            style="@style/Description"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/label_sigma_a">
+            android:layout_columnSpan="2"
+            android:text="@string/descr_noise_density" >
         </TextView>
 
         <TextView
-            android:id="@+id/sigma_a"
+            android:labelFor="@id/noise_density_a"
+            style="@style/Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/noise_density_a">
+        </TextView>
+
+        <TextView
+            android:id="@+id/noise_density_a"
             style="@style/EditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
