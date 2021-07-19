@@ -75,7 +75,7 @@ public class FixedLagSmoother extends KalmanFilter {
         multTransA(H, S_inv, HTSI);
 
         //  P₀ = P⁻
-        P_i.set(P_prior);
+        P_i.setTo(P_prior);
 
         for (i = 1; i < count; i += 1) {
             t = k - i;
@@ -93,7 +93,7 @@ public class FixedLagSmoother extends KalmanFilter {
             if (i + 1 < count) {
                 //  Pᵢ = P⁻(Fₛ)ⁱ
                 mult(P_i, Fs, tmp_ss);
-                P_i.set(tmp_ss);
+                P_i.setTo(tmp_ss);
             }
         }
 
@@ -134,7 +134,7 @@ public class FixedLagSmoother extends KalmanFilter {
         scale(s_inv, HTSI_seq);
 
         //  P₀ = P⁻
-        P_i.set(P_prior);
+        P_i.setTo(P_prior);
 
         for (i = 1; i < count; i += 1) {
             t = k - i;
@@ -151,7 +151,7 @@ public class FixedLagSmoother extends KalmanFilter {
             if (i + 1 < count) {
                 //  Pᵢ = P⁻(Fₛ)ⁱ
                 mult(P_i, Fs, tmp_ss);
-                P_i.set(tmp_ss);
+                P_i.setTo(tmp_ss);
             }
         }
 

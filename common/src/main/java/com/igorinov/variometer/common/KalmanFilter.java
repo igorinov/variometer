@@ -231,7 +231,7 @@ public class KalmanFilter {
             System.arraycopy(control, 0, u.data, 0, controlDim);
             multAdd(B, u, x_prior);
         }
-        x.set(x_prior);
+        x.setTo(x_prior);
 
         //  Prior Covariance
         //  P⁻ = FPF⸆ + Q
@@ -239,7 +239,7 @@ public class KalmanFilter {
         mult(F, P, tmp_ss);
         multTransB(tmp_ss, F, P_prior);
         addEquals(P_prior, Q);
-        P.set(P_prior);
+        P.setTo(P_prior);
 
         return stateDim;
     }
@@ -257,7 +257,7 @@ public class KalmanFilter {
         //  System uncertainty
         //  S = HP⁻H⸆ + R
 
-        S.set(R);
+        S.setTo(R);
         multTransB(P, H, PHT);
         multAdd(H, PHT, S);
 
