@@ -74,14 +74,17 @@
     <string name="descr_noise_density">Noise density</string>
     <string name="label_sigma_p">Pressure, hPa</string>
     <string name="sound_settings">Sound settings</string>
-    <string name="sound_start_above">Start above</string>
-    <string name="sound_stop_below">Stop below</string>
-    <string name="sound_stop_above">Stop above</string>
-    <string name="sound_start_below">Start below</string>
+    <string name="sound_start_above">Start above, m/s</string>
+    <string name="sound_stop_below">Stop below, m/s</string>
+    <string name="sound_stop_above">Stop above, m/s</string>
+    <string name="sound_start_below">Start below, m/s</string>
     <string name="sound_decay">Sound decay</string>
     <string name="descr_sound_decay">Make a string sound instead of beep</string>
-    <string name="const_alt_freq">Const. altitude frequency, Hz</string>
+    <string name="sound_octave">Octave Δv, m/s</string>
+    <string name="descr_sound_octave">Speed difference indicated by one octave</string>
+    <string name="const_alt_freq">Base frequency, Hz</string>
     <string name="sound_partials">Number of partials</string>
+    <string name="sound_inharmonicity">Inharmonicity</string>
 
     <string-array name="pref_unit_list_titles">
         <item>m/s</item>

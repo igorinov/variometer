@@ -70,8 +70,10 @@ public class MainActivity extends AppCompatActivity {
     float soundStopH = +0.2f;
     float soundStopL = -0.2f;
     float soundStartL = -0.3f;
+    float soundOctaveDiff = 3.0f;
     float soundBaseFreq = 500;
     int soundPartials = 4;
+    float soundIHC = 0.0001f;  // Inharmonicity coefficient
 
     static final short REQUEST_CODE_PREFERENCES = 16384;
     static final short REQUEST_CODE_CALIBRATION = 32767;
@@ -100,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
 
         private void init(int p) {
             int k;
-            double B = 0.0001;  // Inharmonicity coefficient
+            double b = soundIHC;
 
             nPartials = p;
             max_sample = 16384.0 / nPartials;
@@ -109,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
             partPhase = new double[nPartials];
             for (k = 0; k < nPartials; k += 1) {
                 double n = k + 1;
-                double a = Math.sqrt(1 + B * n * n);
+                double a = Math.sqrt(1 + b * n * n);
                 partFreq[k] = n * soundBaseFreq * a;
                 partPhase[k] = 0;
                 partAmpl[k] = 1.0 / n;
@@ -130,8 +132,8 @@ public class MainActivity extends AppCompatActivity {
             double v;
             double sample_period = 1.0 / sample_rate;
 
-            // Exponent Multiplier: beep frequency doubles every +3 m/s
-            double em = Math.log(2) / 3;
+            // Exponent Multiplier: beep frequency doubles every X m/s
+            double em = Math.log(2) / soundOctaveDiff;
 
             double amp, fm, dph;
             int i, k;
@@ -419,8 +421,10 @@ public class MainActivity extends AppCompatActivity {
         try {
             soundEnabled = pref.getBoolean(SoundSettingsActivity.PREF_SOUND_ENABLE, soundEnabled);
             soundDecay = pref.getBoolean(SoundSettingsActivity.PREF_SOUND_DECAY, soundDecay);
-            soundBaseFreq = pref.getFloat(SoundSettingsActivity.PREF_SOUND_BASE_FREQ, soundBaseFreq);
-            soundPartials = pref.getInt(SoundSettingsActivity.PREF_SOUND_PARTIALS, soundPartials);
+            soundBaseFreq = pref.getFloat(SoundSettingsActivity.PREF_BASE_FREQ, soundBaseFreq);
+            soundOctaveDiff = pref.getFloat(SoundSettingsActivity.PREF_OCTAVE_DIFF, soundOctaveDiff);
+            soundPartials = pref.getInt(SoundSettingsActivity.PREF_PARTIALS, soundPartials);
+            soundIHC = pref.getFloat(SoundSettingsActivity.PREF_INHARMONICITY, soundIHC);
             soundStartH = pref.getFloat(SoundSettingsActivity.PREF_SOUND_START_H, soundStartH);
             soundStopH = pref.getFloat(SoundSettingsActivity.PREF_SOUND_STOP_H, soundStopH);
             soundStopL = pref.getFloat(SoundSettingsActivity.PREF_SOUND_STOP_L, soundStopL);
@@ -451,8 +455,10 @@ public class MainActivity extends AppCompatActivity {
             checkSensors();
             editor.putBoolean(SoundSettingsActivity.PREF_SOUND_ENABLE, soundEnabled);
             editor.putBoolean(SoundSettingsActivity.PREF_SOUND_DECAY, soundDecay);
-            editor.putFloat(SoundSettingsActivity.PREF_SOUND_BASE_FREQ, soundBaseFreq);
-            editor.putInt(SoundSettingsActivity.PREF_SOUND_PARTIALS, soundPartials);
+            editor.putFloat(SoundSettingsActivity.PREF_BASE_FREQ, soundBaseFreq);
+            editor.putFloat(SoundSettingsActivity.PREF_OCTAVE_DIFF, soundOctaveDiff);
+            editor.putInt(SoundSettingsActivity.PREF_PARTIALS, soundPartials);
+            editor.putFloat(SoundSettingsActivity.PREF_INHARMONICITY, soundIHC);
             editor.putFloat(SoundSettingsActivity.PREF_SOUND_START_H, soundStartH);
             editor.putFloat(SoundSettingsActivity.PREF_SOUND_STOP_H, soundStopH);
             editor.putFloat(SoundSettingsActivity.PREF_SOUND_STOP_L, soundStopL);

@@ -39,6 +39,33 @@
         </TextView>
 
         <TextView
+            android:labelFor="@id/octave_diff"
+            style="@style/Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sound_octave" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/octave_diff"
+            style="@style/EditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="6"
+            android:gravity="right"
+            android:textAlignment="gravity"
+            android:inputType="number">
+        </TextView>
+
+        <TextView
+            style="@style/Description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="2"
+            android:text="@string/descr_sound_octave" >
+        </TextView>
+
+        <TextView
             android:labelFor="@id/sound_start_h"
             style="@style/Label"
             android:layout_width="wrap_content"
@@ -162,6 +189,25 @@
 
         <TextView
             android:id="@+id/sound_partials"
+            style="@style/EditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="6"
+            android:gravity="right"
+            android:textAlignment="gravity"
+            android:inputType="number">
+        </TextView>
+
+        <TextView
+            android:labelFor="@id/sound_inharmonic"
+            style="@style/Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sound_inharmonicity" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/sound_inharmonic"
             style="@style/EditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

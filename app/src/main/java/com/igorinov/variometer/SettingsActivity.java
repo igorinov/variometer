@@ -250,16 +250,17 @@ public class SettingsActivity extends AppCompatActivity {
                     setTitle(title);
                 }
             }
-
+/*
             if (target != null) {
                 number = Float.parseFloat(target.getText().toString());
             }
+ */
         }
 
         void setNumber(float x) {
             number = x;
             if (editNumber != null) {
-                editNumber.setText(Float.toString(x));
+                editNumber.setText(String.format(Locale.US, format, number));
             }
         }
 
@@ -275,11 +276,11 @@ public class SettingsActivity extends AppCompatActivity {
             try {
                 number = Float.parseFloat(editNumber.getText().toString());
             } catch (NumberFormatException e) {
-                // ?
+                return;
             }
 
             if (target != null) {
-                target.setText(String.format(Locale.US, format, number));
+                target.setText(Float.toString( number));
             }
             if (key != null) {
                 SharedPreferences.Editor editor = pref.edit();
@@ -436,16 +437,17 @@ public class SettingsActivity extends AppCompatActivity {
         textView.setOnClickListener(new IntNumberClickListener(key));
     }
 
-    public void initEditFloat(int edit_text_id, String key, float value) {
+    public void initEditFloat(int edit_text_id, String key, float defaultValue) {
         TextView textView = findViewById(edit_text_id);
+        float value;
 
         if (textView == null)
             return;
 
         try {
-            value = pref.getFloat(key, value);
+            value = pref.getFloat(key, defaultValue);
         } catch (ClassCastException e) {
-            // ...
+            value = 0;
         }
 
         textView.setText(Float.toString(value));
