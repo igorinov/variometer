@@ -19,7 +19,7 @@ public class IndicatorSettingsActivity extends SettingsActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_indicator_settings);
 
-        initSpinner(R.id.filter_type, R.array.pref_sensor_sets, PREF_TYPE, 1);
+        initSpinner(R.id.filter_type, R.array.pref_sensor_sets, PREF_TYPE, 0);
         initEditInt(R.id.scale_limit, PREF_SCALE_LIMIT, 1);
         initSpinner(R.id.vsi_unit, R.array.pref_unit_list_titles, PREF_UNIT_INDEX, 0);
         initCompoundButton(R.id.keep_screen, PREF_KEEP_SCREEN, true);

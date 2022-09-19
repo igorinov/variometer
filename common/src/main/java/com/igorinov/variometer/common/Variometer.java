@@ -52,19 +52,17 @@ public class Variometer {
 
     double[] input = new double[2];
     double[] state;
-    float[] dataA = new float[3];
-    double[] biasA = { 0, 0, 0 };
-    double[] scaleA = { 1, 1, 1 };
+    double[] correctionWeight = { 1, 1, 1 };
+    double[] correctionBias = { 0, 0, 0 };
     double[] acc = new double[4];
     double[] q = new double[4];
     double[] q1 = new double[4];
     double[] v = new double[4];
-    boolean firstUpdate = true;
     boolean realPartMayBeMissing = true;
     int smoother_lag;
-    double sigma_p = 0.02;
-    double sigma_h = 0.1;
-    double sigma_a = 0.3;
+    double sigma_p = 0.06;
+    double sigma_h = 1.0;
+    double sigma_a = 0.05;
     double sigma_vsi = 0.0625;
     double sigma_ivsi = 0.0039;
     double gravity = SensorManager.STANDARD_GRAVITY;
@@ -123,18 +121,18 @@ public class Variometer {
 
     /**
      * Set accelerometer noise density
-     * @param s_g Accelerometer noise density, µg/√Hz
+     * @param std_a Accelerometer noise (standard deviation), m/s
      */
-    public void setAccelerometerNoiseDensity(double s_g) {
-        accelerometerNoiseDensity = s_g * SensorManager.STANDARD_GRAVITY * 1e-6;
+    public void setAccelerometerNoise(double std_a) {
+        accelerometerNoiseDensity = std_a;
     }
 
-    public void setAccelerometerCorrection(double[] bias, double[] scale) {
+    public void setAccelerometerCorrection(double[] weights, double[] biases) {
         int k;
 
         for (k = 0; k < 3; k += 1) {
-            biasA[k] = bias[k];
-            scaleA[k] = scale[k];
+            correctionWeight[k] = weights[k];
+            correctionBias[k] = biases[k];
         }
     }
 
@@ -268,16 +266,20 @@ public class Variometer {
             if (!knownAltitude)
                 return;
 
+            double a_x, a_y, a_z;
+
             /*
              *  Transform the acceleration vector to the reference coordinate system
              *  of the rotation sensor, where Z axis is vertical and points up
              */
 
-            System.arraycopy(arg0.values, 0, dataA, 0, 3);
+            a_x = arg0.values[0];
+            a_y = arg0.values[1];
+            a_z = arg0.values[2];
 
-            acc[0] = (dataA[0] - biasA[0]) * scaleA[0];
-            acc[1] = (dataA[1] - biasA[1]) * scaleA[1];
-            acc[2] = (dataA[2] - biasA[2]) * scaleA[2];
+            acc[0] = correctionWeight[0] * a_x + correctionBias[0];
+            acc[1] = correctionWeight[1] * a_y + correctionBias[1];
+            acc[2] = correctionWeight[2] * a_z + correctionBias[2];
             acc[3] = 0;
 
             q1[0] = -q[0];
@@ -365,6 +367,10 @@ public class Variometer {
             rotationSensor = manager.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR);
             if (rotationSensor == null) {
                 rotationSensor = manager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+            }
+            rotationSamplingPeriod = rotationSensor.getMinDelay() * 1e-6;
+            if (rotationSamplingPeriod < minRotationSamplingPeriod) {
+                rotationSamplingPeriod = minRotationSamplingPeriod;
             }
 
             filterPeriod = accelerationSamplingPeriod;
@@ -455,45 +461,48 @@ public class Variometer {
     /*
      *  Accelerometer bias estimation using gradient descent
      */
-    public static void biasUpdate(double[] bias, double[] scale, double[] data, int length, double g) {
+    public static void biasUpdate(double[] b, double[] c, double[] data, int length, double g) {
         /*
-         *  Length of corrected vector [x, y, z]
-         *  lₖ² = (c₀ (xₖ - b₀))² + (c₁ (yₖ - b₁))² + (c₂ (zₖ - b₂))²
+         *  Squared length of corrected vector [x, y, z]
+         *  lₖ² = (b_x·xₖ + c₀)² + (b_y·yₖ + c₁)² + (b_z·zₖ + c₂)²
          *
-         *  Error (difference from local gravity)
-         *  rₖ = lₖ - g
+         *  Squared error (difference from local gravity)
+         *  fₖ = (lₖ - g)²
          *
-         *  Minimize ∑r²ₖ by gradient descent:
+         *  Minimize ∑fₖ by gradient descent:
          *
-         *  ∂r²ₖ / ∂b₀ = c₀² * (2 * b₀ - 2 * x) * (lₖ - g) / lₖ
-         *  ∂r²ₖ / ∂b₁ = c₁² * (2 * b₁ - 2 * y) * (lₖ - g) / lₖ
-         *  ∂r²ₖ / ∂b₂ = c₂² * (2 * b₂ - 2 * z) * (lₖ - g) / lₖ
+         *     ∂f / ∂b_x = 2·x·(l - g) (b_x·x + c0) / l
+         *     ∂f / ∂b_y = 2·y·(l - g) (b_y·y + c1) / l
+         *     ∂f / ∂b_z = 2·z·(l - g) (b_z·z + c2) / l
          *
-         *  ∂r²ₖ / ∂c₀ = 2 * c₀ * (x - b₀)² * (lₖ - g) / lₖ
-         *  ∂r²ₖ / ∂c₁ = 2 * c₁ * (y - b₁)² * (lₖ - g) / lₖ
-         *  ∂r²ₖ / ∂c₂ = 2 * c₂ * (z - b₂)² * (lₖ - g) / lₖ
+         *     ∂f / ∂c_x = 2·(l - g) (b_x·x + c0) / l
+         *     ∂f / ∂c_y = 2·(l - g) (b_y·y + c1) / l
+         *     ∂f / ∂c_z = 2·(l - g) (b_z·z + c2) / l
          */
 
         int N = 4096;
         int i, k;
         double x, y, z;
-        double c0, c1, c2;
-        double _x, _y, _z;
+        double b_x, b_y, b_z;
+        double c_x, c_y, c_z;
         double[] ac = new double[3];
         double gbx, gby, gbz;
         double gcx, gcy, gcz;
         double ll, l;
         double r_l = 1.0f / length;
 
-        // Learning rate for bias
-        double lr = 3e-3;
+        // Learning rate for B
+        double lr_b = 1e-3;
 
-        // Learning rate for scale
-        double lr_s = 1e-3;
+        // Learning rate for C
+        double lr_c = 3e-3;
 
-        c0 = 1;
-        c1 = 1;
-        c2 = 1;
+        b_x = 1;
+        b_y = 1;
+        b_z = 1;
+        c_x = 0;
+        c_y = 0;
+        c_z = 0;
 
         for (i = 0; i < N; i += 1) {
             gbx = 0;
@@ -509,44 +518,49 @@ public class Variometer {
                 z = data[k + 2];
 
                 // Corrected acceleration vector
-                ac[0] = (x - bias[0]) * c0;
-                ac[1] = (y - bias[1]) * c1;
-                ac[2] = (z - bias[2]) * c2;
+                ac[0] = b_x * x + c_x;
+                ac[1] = b_y * y + c_y;
+                ac[2] = b_z * z + c_z;
 
                 // Squared length of the corrected acceleration vector
                 ll = powerSum(ac);
                 l = Math.sqrt(ll);
 
-                // Update the bias gradient vector
-                gbx += c0 * c0 * 2 * (bias[0] - x) * (l - g) / l;
-                gby += c1 * c1 * 2 * (bias[1] - y) * (l - g) / l;
-                gbz += c2 * c2 * 2 * (bias[2] - z) * (l - g) / l;
+                // Update the weight gradient vector
+                gbx += 2 * x * (l - g) * ac[0] / l;
+                gby += 2 * y * (l - g) * ac[1] / l;
+                gbz += 2 * z * (l - g) * ac[2] / l;
 
-                // Update the scale gradient vector
-                gcx += 2 * c0 * (x - bias[0]) * (x - bias[0]) * (l - g) / l;
-                gcy += 2 * c1 * (y - bias[1]) * (y - bias[1]) * (l - g) / l;
-                gcz += 2 * c2 * (z - bias[2]) * (z - bias[2]) * (l - g) / l;
+                // Update the bias gradient vector
+                gcx += 2 * (l - g) * ac[0] / l;
+                gcy += 2 * (l - g) * ac[1] / l;
+                gcz += 2 * (l - g) * ac[2] / l;
             }
+
             gbx *= r_l;
             gby *= r_l;
             gbz *= r_l;
 
-            // Update bias vector
-            bias[0] -= gbx * lr;
-            bias[1] -= gby * lr;
-            bias[2] -= gbz * lr;
+            // Update vector B
+            b_x -= gbx * lr_b;
+            b_y -= gby * lr_b;
+            b_z -= gbz * lr_b;
 
             gcx *= r_l;
             gcy *= r_l;
             gcz *= r_l;
 
-            // Update scale vector
-            c0 -= gcx * lr_s;
-            c1 -= gcy * lr_s;
-            c2 -= gcz * lr_s;
+            // Update vector C
+            c_x -= gcx * lr_c;
+            c_y -= gcy * lr_c;
+            c_z -= gcz * lr_c;
         }
-        scale[0] = c0;
-        scale[1] = c1;
-        scale[2] = c2;
+
+        b[0] = b_x;
+        b[1] = b_y;
+        b[2] = b_z;
+        c[0] = c_x;
+        c[1] = c_y;
+        c[2] = c_z;
     }
 }

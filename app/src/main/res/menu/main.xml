@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/indicator_settings"
         android:title="@string/indicator_settings"
         android:icon="@android:drawable/ic_menu_preferences"
-        android:visible="true">
+        app:showAsAction="ifRoom">
     </item>
     <item
         android:id="@+id/sound_settings"
@@ -25,6 +26,7 @@
     <item
         android:id="@+id/about"
         android:title="@string/about"
-        android:icon="@android:drawable/ic_menu_info_details">
+        android:icon="@android:drawable/ic_menu_info_details"
+        app:showAsAction="ifRoom">
     </item>
 </menu>

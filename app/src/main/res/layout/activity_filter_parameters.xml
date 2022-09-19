@@ -86,19 +86,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_columnSpan="2"
-            android:text="@string/descr_bias_a" >
+            android:text="@string/descr_scale_a" >
         </TextView>
 
         <TextView
-            android:labelFor="@id/bias_a_x"
+            android:labelFor="@id/weight_x"
             style="@style/Label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/bias_a_x" >
+            android:text="@string/x_axis" >
         </TextView>
 
         <TextView
-            android:id="@+id/bias_a_x"
+            android:id="@+id/weight_x"
             style="@style/EditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -107,15 +107,15 @@
         </TextView>
 
         <TextView
-            android:labelFor="@id/bias_a_y"
+            android:labelFor="@id/weight_y"
             style="@style/Label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/bias_a_y" >
+            android:text="@string/y_axis" >
         </TextView>
 
         <TextView
-            android:id="@+id/bias_a_y"
+            android:id="@+id/weight_y"
             style="@style/EditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -124,15 +124,15 @@
         </TextView>
 
         <TextView
-            android:labelFor="@id/bias_a_z"
+            android:labelFor="@id/weight_z"
             style="@style/Label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/bias_a_z" >
+            android:text="@string/z_axis" >
         </TextView>
 
         <TextView
-            android:id="@+id/bias_a_z"
+            android:id="@+id/weight_z"
             style="@style/EditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -145,19 +145,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_columnSpan="2"
-            android:text="@string/descr_scale_a" >
+            android:text="@string/descr_bias_a" >
         </TextView>
 
         <TextView
-            android:labelFor="@id/scale_a_x"
+            android:labelFor="@id/bias_x"
             style="@style/Label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/scale_a_x" >
+            android:text="@string/x_axis" >
         </TextView>
 
         <TextView
-            android:id="@+id/scale_a_x"
+            android:id="@+id/bias_x"
             style="@style/EditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -166,15 +166,15 @@
         </TextView>
 
         <TextView
-            android:labelFor="@id/scale_a_y"
+            android:labelFor="@id/bias_y"
             style="@style/Label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/scale_a_y" >
+            android:text="@string/y_axis" >
         </TextView>
 
         <TextView
-            android:id="@+id/scale_a_y"
+            android:id="@+id/bias_y"
             style="@style/EditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -183,15 +183,15 @@
         </TextView>
 
         <TextView
-            android:labelFor="@id/scale_a_z"
+            android:labelFor="@id/bias_z"
             style="@style/Label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/scale_a_z" >
+            android:text="@string/z_axis" >
         </TextView>
 
         <TextView
-            android:id="@+id/scale_a_z"
+            android:id="@+id/bias_z"
             style="@style/EditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -232,23 +232,15 @@
         </TextView>
 
         <TextView
-            style="@style/Description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_columnSpan="2"
-            android:text="@string/descr_noise_density" >
-        </TextView>
-
-        <TextView
-            android:labelFor="@id/noise_density_a"
+            android:labelFor="@id/sigma_a"
             style="@style/Label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/noise_density_a">
+            android:text="@string/noise_sigma_a">
         </TextView>
 
         <TextView
-            android:id="@+id/noise_density_a"
+            android:id="@+id/sigma_a"
             style="@style/EditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

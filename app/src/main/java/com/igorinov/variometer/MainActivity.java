@@ -17,6 +17,8 @@ import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,6 +26,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
@@ -34,6 +37,7 @@ import static android.media.AudioFormat.CHANNEL_OUT_MONO;
 import static android.media.AudioFormat.ENCODING_PCM_16BIT;
 
 public class MainActivity extends AppCompatActivity {
+    UpdateHandler updateHandler;
     Variometer variometer;
     VerticalSpeedListener varioListener;
     VerticalSpeedIndicator vsi;
@@ -42,13 +46,13 @@ public class MainActivity extends AppCompatActivity {
     SensorManager manager;
     Sensor pressureSensor;
     double[] input = new double[2];
-    double[] biasA = new double[3];
-    double[] scaleA = { 1, 1, 1 };
+    double[] kB = { 1, 1, 1 };
+    double[] kC = { 0, 0, 0 };
     boolean firstUpdate = true;
 
     /** Standard density of pressure noise, hPa */
     double sigma_p = 0.06;
-    double nd_a = 300;
+    double sigma_a = 0.05;
     double sigma_vsi = 0.0625;
     double sigma_ivsi = 0.0039;
     double latitude = 45.0;
@@ -238,11 +242,25 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    class UpdateHandler extends Handler {
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == VerticalSpeedListener.WHAT)
+            vsi.setVSpeed(vspeed);
+            vsi.invalidate();
+        }
+    }
+
     class VerticalSpeedListener implements Variometer.VariometerListener {
+        static final int WHAT = 1;
         @Override
         public void onVerticalSpeedUpdate(float v) {
             vspeed = v;
-            vsi.setVSpeed(vspeed);
+
+            if (!updateHandler.hasMessages(WHAT)) {
+                updateHandler.sendEmptyMessage(WHAT);
+            }
         }
     }
 
@@ -325,6 +343,7 @@ public class MainActivity extends AppCompatActivity {
 
         pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
+//        checkSensors();
         loadSettings();
 
         if(type != TYPE_IVSI)
@@ -345,6 +364,8 @@ public class MainActivity extends AppCompatActivity {
             return;
 
         pressureSensor = manager.getDefaultSensor(Sensor.TYPE_PRESSURE);
+
+        updateHandler = new UpdateHandler();
     }
 
     @Override
@@ -403,8 +424,8 @@ public class MainActivity extends AppCompatActivity {
 
         varioListener = new VerticalSpeedListener();
         variometer.setLatitude(latitude);
-        variometer.setAccelerometerCorrection(biasA, scaleA);
-        variometer.setAccelerometerNoiseDensity(nd_a);
+        variometer.setAccelerometerCorrection(kB, kC);
+        variometer.setAccelerometerNoise(sigma_a);
         variometer.setPressureNoise(sigma_p);
         variometer.setListener(varioListener);
         variometer.start(this);
@@ -438,15 +459,15 @@ public class MainActivity extends AppCompatActivity {
             smoother_lag = pref.getInt(FilterParametersActivity.PREF_SMOOTHER_LAG, smoother_lag);
             sigma_vsi = pref.getFloat(FilterParametersActivity.PREF_SIGMA_1, (float) sigma_vsi);
             sigma_ivsi = pref.getFloat(FilterParametersActivity.PREF_SIGMA_2, (float) sigma_ivsi);
-            nd_a = pref.getFloat(FilterParametersActivity.PREF_NOISE_DENSITY_A, (float) nd_a);
+            sigma_a = pref.getFloat(FilterParametersActivity.PREF_SIGMA_A, (float) sigma_a);
             sigma_p = pref.getFloat(FilterParametersActivity.PREF_SIGMA_P, (float) sigma_p);
             latitude = pref.getFloat(FilterParametersActivity.PREF_LATITUDE, (float) latitude);
-            biasA[0] = pref.getFloat(FilterParametersActivity.PREF_BIAS_X, 0);
-            biasA[1] = pref.getFloat(FilterParametersActivity.PREF_BIAS_Y, 0);
-            biasA[2] = pref.getFloat(FilterParametersActivity.PREF_BIAS_Z, 0);
-            scaleA[0] = pref.getFloat(FilterParametersActivity.PREF_SCALE1_X, 0) + 1.0;
-            scaleA[1] = pref.getFloat(FilterParametersActivity.PREF_SCALE1_Y, 0) + 1.0;
-            scaleA[2] = pref.getFloat(FilterParametersActivity.PREF_SCALE1_Z, 0) + 1.0;
+            kB[0] = pref.getFloat(FilterParametersActivity.PREF_WEIGHT_X, 0) + 1.0;
+            kB[1] = pref.getFloat(FilterParametersActivity.PREF_WEIGHT_Y, 0) + 1.0;
+            kB[2] = pref.getFloat(FilterParametersActivity.PREF_WEIGHT_Z, 0) + 1.0;
+            kC[0] = pref.getFloat(FilterParametersActivity.PREF_BIAS_X, 0);
+            kC[1] = pref.getFloat(FilterParametersActivity.PREF_BIAS_Y, 0);
+            kC[2] = pref.getFloat(FilterParametersActivity.PREF_BIAS_Z, 0);
         } catch (ClassCastException exception) {
             pref_valid = false;
         }
@@ -472,32 +493,31 @@ public class MainActivity extends AppCompatActivity {
             editor.putInt(FilterParametersActivity.PREF_SMOOTHER_LAG, smoother_lag);
             editor.putFloat(FilterParametersActivity.PREF_SIGMA_1, (float) sigma_vsi);
             editor.putFloat(FilterParametersActivity.PREF_SIGMA_2, (float) sigma_ivsi);
-            editor.putFloat(FilterParametersActivity.PREF_NOISE_DENSITY_A, (float) nd_a);
+            editor.putFloat(FilterParametersActivity.PREF_SIGMA_A, (float) sigma_a);
             editor.putFloat(FilterParametersActivity.PREF_SIGMA_P, (float) sigma_p);
             editor.putFloat(FilterParametersActivity.PREF_LATITUDE, (float) latitude);
-            editor.putFloat(FilterParametersActivity.PREF_BIAS_X, (float) biasA[0]);
-            editor.putFloat(FilterParametersActivity.PREF_BIAS_Y, (float) biasA[1]);
-            editor.putFloat(FilterParametersActivity.PREF_BIAS_Z, (float) biasA[2]);
-            editor.putFloat(FilterParametersActivity.PREF_SCALE1_X, (float) (scaleA[0] - 1.0));
-            editor.putFloat(FilterParametersActivity.PREF_SCALE1_Y, (float) (scaleA[1] - 1.0));
-            editor.putFloat(FilterParametersActivity.PREF_SCALE1_Z, (float) (scaleA[2] - 1.0));
+            editor.putFloat(FilterParametersActivity.PREF_WEIGHT_X, (float) (kB[0] - 1.0));
+            editor.putFloat(FilterParametersActivity.PREF_WEIGHT_Y, (float) (kB[1] - 1.0));
+            editor.putFloat(FilterParametersActivity.PREF_WEIGHT_Z, (float) (kB[2] - 1.0));
+            editor.putFloat(FilterParametersActivity.PREF_BIAS_X, (float) kC[0]);
+            editor.putFloat(FilterParametersActivity.PREF_BIAS_Y, (float) kC[1]);
+            editor.putFloat(FilterParametersActivity.PREF_BIAS_Z, (float) kC[2]);
             editor.apply();
+
+            Intent intent = new Intent(this, LatitudeActivity.class);
+            startActivity(intent);
         }
     }
 
     public void checkSensors() {
         manager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        if (manager == null)
+        if (manager == null) {
             return;
-
-        pressureSensor = manager.getDefaultSensor(Sensor.TYPE_PRESSURE);
-
-        Sensor accelerometers = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        if (accelerometers.getName().equals("MPL Accelerometer")) {
-            nd_a = 750.0;
         }
-        if (accelerometers.getName().equals("Invensense Accelerometer")) {
-            nd_a = 500.0;
+
+        Sensor rotationSensor = manager.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR);
+        if (rotationSensor == null) {
+            type = TYPE_VSI;
         }
     }
 }

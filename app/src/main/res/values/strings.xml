@@ -2,14 +2,17 @@
     <string name="app_name" translatable="false">Variometer</string>
     <string name="app_description">Vertical speed indicator</string>
     <string name="app_copyright">© Ivan Gorinov, 2012</string>
-    <string name="home_page">http://igorinov.com/android/variometer</string>
-    <string name="app_credit">This project uses Easy Java Math Library by Peter Abeles</string>
+    <string name="home_page">https://altimeter.info/android/variometer</string>
+    <string name="app_credit">Easy Java Math Library by Peter Abeles</string>
     <string name="app_credit_page">https://ejml.org</string>
+    <string name="app_notice1">This version will not be updated by Play Store because the package name is going to change.</string>
+    <string name="app_notice2">Check the project page for updates.</string>
     <string name="about">About</string>
     <string name="reset">Reset</string>
     <string name="indicator">Indicator</string>
     <string name="filter">Filter</string>
     <string name="indicator_settings">Indicator settings</string>
+    <string name="text_latitude">Latitude of your location will be used for better local gravity estimation in IVSI mode.</string>
     <string name="filter_parameters">Filter parameters</string>
     <string name="filter_type">Filter type</string>
     <string name="enable_sound">Enable sound</string>
@@ -29,13 +32,10 @@
     <string name="label_sigma_a">Acceleration, m/s²</string>
     <string name="bias_a">Accelerometer bias correction</string>
     <string name="scale_a">Accelerometer scale correction</string>
-    <string name="bias_a_x">X axis</string>
-    <string name="bias_a_y">Y axis</string>
-    <string name="bias_a_z">Z axis</string>
-    <string name="scale_a_x">X axis</string>
-    <string name="scale_a_y">Y axis</string>
-    <string name="scale_a_z">Z axis</string>
-    <string name="descr_bias_a">Accelerometer bias for each axis, in m/s²</string>
+    <string name="x_axis">X axis</string>
+    <string name="y_axis">Y axis</string>
+    <string name="z_axis">Z axis</string>
+    <string name="descr_bias_a">Accelerometer bias, m/s²</string>
     <string name="descr_scale_a">Accelerometer scale correction</string>
     <string name="keep_screen_on">Keep screen on</string>
     <string name="defaults">Reset Defaults</string>
@@ -52,7 +52,7 @@
     <string name="pref_default_scale_limit">5</string>
 
     <string name="calibration">Calibration</string>
-    <string name="calibration_step0">For best results, the acceleration sensor needs to be calibrated. Calibration in this app does not affect sensor readings in other apps.</string>
+    <string name="calibration_step0">For best results, the acceleration sensor needs to be calibrated. Calibration parameters are stored in this app&amp;s settings and do not affect sensor readings in other apps.</string>
     <string name="calibration_step0a">Steady support is more important than correct orientation. If you have a stand that holds the device in a tilted position, use the stand instead of holding the device by hand.</string>
     <string name="calibration_display_up">On the table, display facing UP</string>
     <string name="calibration_display_down">On the table, display facing DOWN</string>
@@ -70,7 +70,7 @@
     <string name="processing_sensor_data">PROCESSING</string>
     <string name="too_much_noise">Too much noise in sensor data"</string>
     <string name="description_latitude">Latitude improves local gravity estimation</string>
-    <string name="noise_density_a">Accelerometer, µg/√Hz</string>
+    <string name="noise_sigma_a">Accelerometer, m/s²</string>
     <string name="descr_noise_density">Noise density</string>
     <string name="label_sigma_p">Pressure, hPa</string>
     <string name="sound_settings">Sound settings</string>
@@ -85,6 +85,12 @@
     <string name="const_alt_freq">Base frequency, Hz</string>
     <string name="sound_partials">Number of partials</string>
     <string name="sound_inharmonicity">Inharmonicity</string>
+    <string name="calibration_stand_45">On the stand, leaning back about 45°</string>
+    <string name="calibration_leaning_left">On the stand, leaning to the left</string>
+    <string name="calibration_leaning_right">On the stand, leaning to the right</string>
+    <string name="calibration_stand_45_fwd">On the stand, leaning forward about 45</string>
+    <string name="label_latitude">Latitude</string>
+    <string name="enter">Enter</string>
 
     <string-array name="pref_unit_list_titles">
         <item>m/s</item>

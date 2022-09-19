@@ -6,7 +6,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,12 +15,9 @@ import android.preference.PreferenceManager;
 import android.support.wearable.activity.WearableActivity;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.igorinov.variometer.common.Variometer;
-
-import java.util.Locale;
 
 public class CalibrationActivity extends WearableActivity {
 
@@ -31,8 +27,9 @@ public class CalibrationActivity extends WearableActivity {
     VibrationEffect effect;
     SensorManager manager;
     Sensor accelerometer;
-    double[] scale;
-    double[] bias;
+    double[] kA;
+    double[] weights;
+    double[] biases;
     double[] data;
     int calibrationIndex = 0;
     AccelerationListener listener;
@@ -88,19 +85,19 @@ public class CalibrationActivity extends WearableActivity {
         double latitude = pref.getFloat("latitude", 45);
         double g = Variometer.localGravity(latitude);
         boolean calibrated = true;
-        bias[0] = 0;
-        bias[1] = 0;
-        bias[2] = 0;
-        Variometer.biasUpdate(bias, scale, data, calibrationIndex * 3, g);
+        Variometer.biasUpdate(weights, biases, data, calibrationIndex * 3, g);
         SharedPreferences.Editor editor = pref.edit();
-        if (Double.isNaN(bias[0]) || Double.isNaN(bias[1]) || Double.isNaN(bias[2]))
+        if (Double.isNaN(biases[0]) || Double.isNaN(biases[1]) || Double.isNaN(biases[2]))
             calibrated = false;
-        editor.putFloat("bias_x", (float) bias[0]);
-        editor.putFloat("bias_y", (float) bias[1]);
-        editor.putFloat("bias_z", (float) bias[2]);
-        editor.putFloat("scale_x", (float) (scale[0] - 1.0));
-        editor.putFloat("scale_y", (float) (scale[1] - 1.0));
-        editor.putFloat("scale_z", (float) (scale[2] - 1.0));
+        editor.putFloat("k_a_x", (float) kA[0]);
+        editor.putFloat("k_a_y", (float) kA[1]);
+        editor.putFloat("k_a_z", (float) kA[2]);
+        editor.putFloat("k_b_x", (float) (weights[0] - 1.0));
+        editor.putFloat("k_b_y", (float) (weights[1] - 1.0));
+        editor.putFloat("k_b_z", (float) (weights[2] - 1.0));
+        editor.putFloat("k_c_x", (float) biases[0]);
+        editor.putFloat("k_c_y", (float) biases[1]);
+        editor.putFloat("k_c_z", (float) biases[2]);
         editor.putBoolean("calibrated", calibrated);
         editor.apply();
         returnResult(RESULT_OK);
@@ -157,14 +154,15 @@ public class CalibrationActivity extends WearableActivity {
         manager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerometer = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
-        scale = new double[3];
-        bias = new double[3];
-        bias[0] = 0;
-        bias[1] = 0;
-        bias[2] = 0;
-        scale[0] = 1;
-        scale[1] = 1;
-        scale[2] = 1;
+        kA[0] = 0;
+        kA[1] = 0;
+        kA[2] = 0;
+        weights[0] = 1;
+        weights[1] = 1;
+        weights[2] = 1;
+        biases[0] = 0;
+        biases[1] = 0;
+        biases[2] = 0;
         data = new double[MAX_POINTS * 3];
         //handler.sendEmptyMessageDelayed(73, 1000);
     }

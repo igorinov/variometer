@@ -27,6 +27,14 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".LatitudeActivity"
+            android:label="@string/label_latitude"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.igorinov.variometer.LatitudeActivity" />
+        </activity>
+        <activity
             android:name=".IndicatorSettingsActivity"
             android:label="@string/indicator_settings"
             android:parentActivityName=".MainActivity">

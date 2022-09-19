@@ -1,6 +1,5 @@
 package com.igorinov.variometer;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
@@ -38,8 +37,8 @@ public class CalibrationActivity extends AppCompatActivity {
     VibrationEffect effect;
     SensorManager manager;
     Sensor accelerometer;
-    double[] scale;
-    double[] bias;
+    double[] kB;
+    double[] kC;
     double[] data;
     double[] data2;
     int positionIndex = 0;
@@ -60,7 +59,7 @@ public class CalibrationActivity extends AppCompatActivity {
             R.string.calibration_upright,
             R.string.calibration_left_side_down,
             R.string.calibration_upside_down,
-            R.string.calibration_right_side_down
+            R.string.calibration_right_side_down,
     };
     static int[] picture_ids = {
             R.drawable.phone_displayup,
@@ -68,7 +67,7 @@ public class CalibrationActivity extends AppCompatActivity {
             R.drawable.phone_upright,
             R.drawable.phone_leftsidedown,
             R.drawable.phone_upsidedown,
-            R.drawable.phone_rightsidedown
+            R.drawable.phone_rightsidedown,
     };
 
     static String[] factoryCalibratedModels = {
@@ -78,6 +77,9 @@ public class CalibrationActivity extends AppCompatActivity {
             "Google", "Pixel 4",
             "Google", "Pixel 4a",
             "Google", "Pixel 5",
+            "Google", "Pixel 5a",
+            "Google", "Pixel 6",
+            "Google", "Pixel 6a",
     };
 
     private void returnResult(int resultCode) {
@@ -90,13 +92,13 @@ public class CalibrationActivity extends AppCompatActivity {
         public void run() {
             double latitude = pref.getFloat(FilterParametersActivity.PREF_LATITUDE, 45);
             double g = Variometer.localGravity(latitude);
-            bias[0] = 0;
-            bias[1] = 0;
-            bias[2] = 0;
-            scale[0] = 1;
-            scale[1] = 1;
-            scale[2] = 1;
-            Variometer.biasUpdate(bias, scale, data2, positionIndex * 3, g);
+            kB[0] = 1;
+            kB[1] = 1;
+            kB[2] = 1;
+            kC[0] = 0;
+            kC[1] = 0;
+            kC[2] = 0;
+            Variometer.biasUpdate(kB, kC, data2, positionIndex * 3, g);
 
             handler.sendEmptyMessage(MESSAGE_OPTIMIZATION_DONE);
         }
@@ -221,7 +223,11 @@ public class CalibrationActivity extends AppCompatActivity {
                     return;
                 }
                 textDeviceOrientation.setText(getString(string_ids[positionIndex]));
-                imagePhone.setImageResource(picture_ids[positionIndex]);
+                if (picture_ids[positionIndex] == 0) {
+                    imagePhone.setVisibility(View.INVISIBLE);
+                } else {
+                    imagePhone.setImageResource(picture_ids[positionIndex]);
+                }
                 buttonNext.setEnabled(true);
             }
 
@@ -236,26 +242,27 @@ public class CalibrationActivity extends AppCompatActivity {
         boolean calibrated = true;
         SharedPreferences.Editor editor = pref.edit();
         for (k = 0; k < 3; k += 1) {
-            if (Double.isNaN(bias[k]) || Math.abs(bias[k]) > 0.5) {
+            if (Double.isNaN(kB[k]) || Math.abs(kB[k] - 1.0) > 0.125) {
                 calibrated = false;
                 break;
             }
-            if (Double.isNaN(scale[k]) || Math.abs(scale[k] - 1.0) > 0.125) {
+            if (Double.isNaN(kC[k]) || Math.abs(kC[k]) > 0.5) {
                 calibrated = false;
                 break;
             }
         }
         if (calibrated) {
-            editor.putFloat("bias_x", (float) bias[0]);
-            editor.putFloat("bias_y", (float) bias[1]);
-            editor.putFloat("bias_z", (float) bias[2]);
-
             /*
              * Subtracting 1 from scale before converting to float to improve precision
              */
-            editor.putFloat(FilterParametersActivity.PREF_SCALE1_X, (float) (scale[0] - 1.0));
-            editor.putFloat(FilterParametersActivity.PREF_SCALE1_Y, (float) (scale[1] - 1.0));
-            editor.putFloat(FilterParametersActivity.PREF_SCALE1_Z, (float) (scale[2] - 1.0));
+            editor.putFloat(FilterParametersActivity.PREF_WEIGHT_X, (float) (kB[0] - 1.0));
+            editor.putFloat(FilterParametersActivity.PREF_WEIGHT_Y, (float) (kB[1] - 1.0));
+            editor.putFloat(FilterParametersActivity.PREF_WEIGHT_Z, (float) (kB[2] - 1.0));
+
+            editor.putFloat(FilterParametersActivity.PREF_BIAS_X, (float) kC[0]);
+            editor.putFloat(FilterParametersActivity.PREF_BIAS_Y, (float) kC[1]);
+            editor.putFloat(FilterParametersActivity.PREF_BIAS_Z, (float) kC[2]);
+
             editor.putBoolean("calibrated", calibrated);
             editor.apply();
             returnResult(RESULT_OK);
@@ -339,14 +346,14 @@ public class CalibrationActivity extends AppCompatActivity {
         manager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerometer = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
-        scale = new double[3];
-        bias = new double[3];
-        bias[0] = 0;
-        bias[1] = 0;
-        bias[2] = 0;
-        scale[0] = 1;
-        scale[1] = 1;
-        scale[2] = 1;
+        kB = new double[3];
+        kC = new double[3];
+        kB[0] = 1;
+        kB[1] = 1;
+        kB[2] = 1;
+        kC[0] = 0;
+        kC[1] = 0;
+        kC[2] = 0;
         data = new double[SAMPLES_PER_POSITION * 3];
         data2 = new double[MAX_POSITIONS * 3];
 

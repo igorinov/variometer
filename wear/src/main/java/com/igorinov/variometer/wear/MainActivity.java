@@ -21,8 +21,8 @@ public class MainActivity extends WearableActivity {
     private VerticalSpeedIndicator vsiView;
     static final int REQUEST_CODE_ABOUT = 1;
     static final int REQUEST_CODE_CALIBRATION = 2;
-    double[] scaleA = { 1.0, 1.0, 1.0 };
-    double[] biasA = new double[3];
+    double[] kB = { 1.0, 1.0, 1.0 };
+    double[] kC = { 0.0, 0.0, 0.0 };
     boolean calibrated = false;
 
 
@@ -126,16 +126,16 @@ public class MainActivity extends WearableActivity {
         super.onResume();
         calibrated = pref.getBoolean("calibrated", false);
         if (calibrated) {
-            biasA[0] = pref.getFloat("bias_x", 0);
-            biasA[1] = pref.getFloat("bias_y", 0);
-            biasA[2] = pref.getFloat("bias_z", 0);
-            scaleA[0] = pref.getFloat("scale_x", 0) + 1.0;
-            scaleA[1] = pref.getFloat("scale_y", 0) + 1.0;
-            scaleA[2] = pref.getFloat("scale_z", 0) + 1.0;
+            kB[0] = pref.getFloat("k_b_x", 0) + 1.0;
+            kB[1] = pref.getFloat("k_b_y", 0) + 1.0;
+            kB[2] = pref.getFloat("k_b_z", 0) + 1.0;
+            kC[0] = pref.getFloat("k_c_x", 0);
+            kC[1] = pref.getFloat("k_c_y", 0);
+            kC[2] = pref.getFloat("k_c_z", 0);
         } else {
             startCalibration();
         }
-        variometer.setAccelerometerCorrection(biasA, scaleA);
+        variometer.setAccelerometerCorrection(kB, kC);
         variometer.start(this);
     }
 

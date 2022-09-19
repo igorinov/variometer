@@ -371,6 +371,6 @@ public class VerticalSpeedIndicator extends View
 	
 	public void setVSpeed(float speed) {
 		vspeed = speed;
-		postInvalidate();
+		// postInvalidate();
 	}
 }
