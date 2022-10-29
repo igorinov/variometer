@@ -9,7 +9,7 @@
     tools:context=".MainActivity"
     tools:deviceIds="wear">
 
-    <com.igorinov.variometer.common.VerticalSpeedIndicator
+    <info.altimeter.variometer.common.VerticalSpeedIndicator
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/vsi" />

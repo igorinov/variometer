@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.igorinov.variometer">
+    package="info.altimeter.variometer">
 
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <uses-feature
         android:name="android.hardware.sensor.barometer"
@@ -32,7 +31,7 @@
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.igorinov.variometer.LatitudeActivity" />
+                android:value="info.altimeter.variometer.LatitudeActivity" />
         </activity>
         <activity
             android:name=".IndicatorSettingsActivity"
@@ -40,7 +39,7 @@
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.igorinov.variometer.MainActivity" />
+                android:value="info.altimeter.variometer.MainActivity" />
         </activity>
         <activity
             android:name=".FilterParametersActivity"
@@ -48,7 +47,7 @@
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.igorinov.variometer.MainActivity" />
+                android:value="info.altimeter.variometer.MainActivity" />
         </activity>
         <activity
             android:name=".SoundSettingsActivity"
@@ -56,7 +55,7 @@
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.igorinov.variometer.MainActivity" />
+                android:value="info.altimeter.variometer.MainActivity" />
         </activity>
         <activity
             android:name=".CalibrationActivity"
@@ -65,7 +64,7 @@
             android:screenOrientation="nosensor">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.igorinov.variometer.MainActivity" />
+                android:value="info.altimeter.variometer.MainActivity" />
         </activity>
     </application>
 

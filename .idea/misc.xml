@@ -7,11 +7,14 @@
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.224" />
         <entry key="app/src/main/res/drawable/phone_upright.xml" value="0.206" />
         <entry key="app/src/main/res/drawable/red_frame.xml" value="0.234" />
+        <entry key="app/src/main/res/layout-land/activity_main.xml" value="0.14506172839506173" />
         <entry key="app/src/main/res/layout/about.xml" value="0.26811594202898553" />
         <entry key="app/src/main/res/layout/activity_calibration.xml" value="0.18161094224924013" />
         <entry key="app/src/main/res/layout/activity_filter_parameters.xml" value="0.18697916666666667" />
         <entry key="app/src/main/res/layout/activity_latitude.xml" value="0.1984375" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.24909420289855072" />
+        <entry key="wear/src/main/res/layout/activity_calibration.xml" value="0.9736842105263158" />
+        <entry key="wear/src/main/res/layout/activity_main.xml" value="0.9736842105263158" />
       </map>
     </option>
   </component>
