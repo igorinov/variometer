@@ -29,7 +29,7 @@ public class MainActivity extends WearableActivity {
     class SpeedListener implements Variometer.VariometerListener {
 
         @Override
-        public void onVerticalSpeedUpdate(float v) {
+        public void onStateUpdate(float h, float v) {
             vsiView.setVSpeed(v);
         }
     }

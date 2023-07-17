@@ -54,29 +54,4 @@
         android:textSize="6pt" >
     </TextView>
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_margin="6pt"
-        android:background="@drawable/red_frame">
-
-        <TextView
-            android:id="@+id/label_notice1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="6pt"
-            android:text="@string/app_notice1"
-            android:textSize="6pt" >
-        </TextView>
-
-        <TextView
-            android:id="@+id/label_notice2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="6pt"
-            android:text="@string/app_notice2"
-            android:textSize="6pt" >
-        </TextView>
-    </LinearLayout>
 </LinearLayout>

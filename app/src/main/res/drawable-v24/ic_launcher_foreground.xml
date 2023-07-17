@@ -9,15 +9,15 @@
         android:fillColor="#333333"
         android:fillType="nonZero"
         android:pathData="M19,54 A35,35 0 1 1 89,54 A35,35 0 1 1 19,54 Z"
-        android:strokeWidth="1"
+        android:strokeWidth="2"
         android:strokeColor="#999999" />
     <group
         android:pivotX="54"
         android:pivotY="54"
         android:rotation="-120">
         <path
-            android:pathData="M22,54 26,54"
-            android:strokeWidth="2"
+            android:pathData="M21,54 27,54"
+            android:strokeWidth="4"
             android:strokeColor="#FFFFFF" />
     </group>
     <group
@@ -25,8 +25,8 @@
         android:pivotY="54"
         android:rotation="-90">
         <path
-            android:pathData="M22,54 26,54"
-            android:strokeWidth="2"
+            android:pathData="M21,54 27,54"
+            android:strokeWidth="4"
             android:strokeColor="#FFFFFF" />
     </group>
     <group
@@ -34,8 +34,8 @@
         android:pivotY="54"
         android:rotation="-60">
         <path
-            android:pathData="M22,54 26,54"
-            android:strokeWidth="2"
+            android:pathData="M21,54 27,54"
+            android:strokeWidth="4"
             android:strokeColor="#FFFFFF" />
     </group>
     <group
@@ -43,8 +43,8 @@
         android:pivotY="54"
         android:rotation="-30">
         <path
-            android:pathData="M22,54 26,54"
-            android:strokeWidth="2"
+            android:pathData="M21,54 27,54"
+            android:strokeWidth="4"
             android:strokeColor="#FFFFFF" />
     </group>
     <group
@@ -52,8 +52,8 @@
         android:pivotY="54"
         android:rotation="0">
         <path
-            android:pathData="M22,54 26,54"
-            android:strokeWidth="2"
+            android:pathData="M21,54 27,54"
+            android:strokeWidth="4"
             android:strokeColor="#FFFFFF" />
     </group>
     <group
@@ -61,8 +61,8 @@
         android:pivotY="54"
         android:rotation="30">
         <path
-            android:pathData="M22,54 26,54"
-            android:strokeWidth="2"
+            android:pathData="M21,54 27,54"
+            android:strokeWidth="4"
             android:strokeColor="#FFFFFF" />
     </group>
     <group
@@ -70,8 +70,8 @@
         android:pivotY="54"
         android:rotation="60">
         <path
-            android:pathData="M22,54 26,54"
-            android:strokeWidth="2"
+            android:pathData="M21,54 27,54"
+            android:strokeWidth="4"
             android:strokeColor="#FFFFFF" />
     </group>
     <group
@@ -79,8 +79,8 @@
         android:pivotY="54"
         android:rotation="90">
         <path
-            android:pathData="M22,54 26,54"
-            android:strokeWidth="2"
+            android:pathData="M21,54 27,54"
+            android:strokeWidth="4"
             android:strokeColor="#FFFFFF" />
     </group>
     <group
@@ -88,8 +88,8 @@
         android:pivotY="54"
         android:rotation="120">
         <path
-            android:pathData="M22,54 26,54"
-            android:strokeWidth="2"
+            android:pathData="M21,54 27,54"
+            android:strokeWidth="4"
             android:strokeColor="#FFFFFF" />
     </group>
 

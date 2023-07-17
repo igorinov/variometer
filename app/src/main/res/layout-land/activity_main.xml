@@ -9,6 +9,78 @@
         android:id="@+id/vsi"
         android:layout_width="0dip"
         android:layout_height="match_parent"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:background="@android:color/black" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="bottom">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="48pt"
+                android:layout_height="24pt"
+                android:id="@+id/altitude"
+                android:gravity="center_vertical|end"
+                android:fontFamily="monospace"
+                android:textSize="12pt"
+                android:textColor="#FFFFFFFF" />
+
+            <TextView
+                android:layout_width="24pt"
+                android:layout_height="24pt"
+                android:id="@+id/alt_unit"
+                android:paddingHorizontal="3pt"
+                android:gravity="center"
+                android:fontFamily="sans-serif"
+                android:textSize="12pt" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="48pt"
+                android:layout_height="24pt"
+                android:id="@+id/pressure"
+                android:gravity="center_vertical|end"
+                android:fontFamily="monospace"
+                android:textSize="12pt"
+                android:textColor="#FF33CCCC" />
+            <TextView
+                android:layout_width="24pt"
+                android:layout_height="24pt"
+                android:id="@+id/pressure_unit"
+                android:gravity="center"
+                android:fontFamily="sans-serif"
+                android:textSize="9pt"
+                android:textColor="#FF33CCCC" />
+        </LinearLayout>
+
+        <Button
+            android:layout_width="72pt"
+            android:layout_height="24pt"
+            android:id="@+id/start"
+            android:text="Start"
+            android:textSize="9pt"
+            android:textAllCaps="false" />
+
+        <Button
+            android:layout_width="72pt"
+            android:layout_height="24pt"
+            android:id="@+id/stop"
+            android:text="Stop"
+            android:textSize="9pt"
+            android:textAllCaps="false" />
+
+    </LinearLayout>
 
 </LinearLayout>

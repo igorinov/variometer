@@ -34,7 +34,7 @@ public class SettingsActivity extends AppCompatActivity {
     SharedPreferences.Editor editor = null;
     SparseArray<View> labelMap = new SparseArray<View>();
 
-    // Find the target view'S label
+    // Find the target view's label
 
     String labelText(View target) {
         if (target == null)

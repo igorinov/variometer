@@ -3,6 +3,8 @@
     package="info.altimeter.variometer">
 
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
 
     <uses-feature
         android:name="android.hardware.sensor.barometer"
@@ -18,7 +20,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -31,7 +34,15 @@
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="info.altimeter.variometer.LatitudeActivity" />
+                android:value="info.altimeter.variometer.MainActivity" />
+        </activity>
+        <activity
+            android:name=".PressureActivity"
+            android:label="@string/label_pressure"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="info.altimeter.variometer.MainActivity" />
         </activity>
         <activity
             android:name=".IndicatorSettingsActivity"
@@ -66,6 +77,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="info.altimeter.variometer.MainActivity" />
         </activity>
+        <service android:name=".VariometerService"
+            android:stopWithTask="false"
+            android:foregroundServiceType="mediaPlayback">
+        </service>
     </application>
 
 </manifest>

@@ -3,7 +3,7 @@
     <string name="app_description">Vertical speed indicator</string>
     <string name="app_copyright">© Ivan Gorinov, 2012</string>
     <string name="home_page">https://altimeter.info/android/variometer</string>
-    <string name="app_credit">Easy Java Math Library by Peter Abeles</string>
+    <string name="app_credit">Efficient Java Math Library by Peter Abeles</string>
     <string name="app_credit_page">https://ejml.org</string>
     <string name="app_notice1">This version will not be updated by Play Store because the package name is going to change.</string>
     <string name="app_notice2">Check the project page for updates.</string>
@@ -91,11 +91,27 @@
     <string name="calibration_stand_45_fwd">On the stand, leaning forward about 45</string>
     <string name="label_latitude">Latitude</string>
     <string name="enter">Enter</string>
+    <string name="label_pressure">Altimeter setting</string>
+    <string name="ft">ft</string>
+    <string name="channel_name">VSI Notification Channel</string>
+    <string name="channel_description">Keep VSI running as a foreground service</string>
+    <string name="sound_odd_partials">Odd partials only</string>
+
+    <string-array name="alt_units">
+        <item>m</item>
+        <item>ft</item>
+    </string-array>
+
+    <string-array name="p_units">
+        <item>hPa</item>
+        <item>mm\nHg</item>
+        <item>in\nHg</item>
+    </string-array>
 
     <string-array name="pref_unit_list_titles">
         <item>m/s</item>
         <item>knots</item>
-        <item>100ft/min</item>
+        <item>×100 ft/min</item>
     </string-array>
 
     <string-array name="pref_sensor_sets">

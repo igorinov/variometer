@@ -24,6 +24,8 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
 
+import java.util.StringTokenizer;
+
 public class VerticalSpeedIndicator extends View
 {
 	Bitmap dialPlate = null;
@@ -42,7 +44,7 @@ public class VerticalSpeedIndicator extends View
 	float scaleLimitR = 1f / scaleLimit;
 	float vspeed = Float.NaN;
 	String typeName = "";
-	String unitName = "";
+	String unitName = "m/s";
 
 	public VerticalSpeedIndicator(Context context) {
 		this(context, null);
@@ -109,7 +111,14 @@ public class VerticalSpeedIndicator extends View
 
 		canvas.drawBitmap(dialPlate, cx - dialPlate.getWidth() / 2, cy - dialPlate.getHeight() / 2, paint);
 
-		if (!Float.isNaN(vspeed)) {
+		if (Float.isNaN(vspeed)) {
+			paint.setColor(Color.RED);
+			paint.setStrokeWidth(8);
+			int rx = Math.round(dialPlate.getWidth() * 0.375f);
+			int ry = Math.round(dialPlate.getHeight() * 0.375f);
+			canvas.drawLine(cx - rx, cy - ry, cx + rx, cy + ry, paint);
+			canvas.drawLine(cx - rx, cy + ry, cx + rx, cy - ry, paint);
+		} else {
 			canvas.save();
 			canvas.rotate((float) (indication * 180f * scaleLimitR), cx, cy);
 			canvas.drawBitmap(dialArrow, cx - dialArrow.getWidth() / 2, cy - dialArrow.getHeight() / 2, paint);
@@ -243,7 +252,14 @@ public class VerticalSpeedIndicator extends View
 		paint.setTextSize(16);
 		paint.getFontMetrics(metrics);
 		textMiddle = (metrics.ascent + metrics.descent) / 2;
-		canvas.drawText(unitName, cx, ty - textMiddle, paint);
+
+		float y = ty - textMiddle;
+		StringTokenizer tokenizer = new StringTokenizer(unitName);
+		while (tokenizer.hasMoreTokens()) {
+			canvas.drawText(tokenizer.nextToken(), cx, y, paint);
+			y += 20;
+		}
+
 		if (typeName != null) {
 			canvas.drawText(typeName, cx, cy - 48 - textMiddle, paint);
 		}

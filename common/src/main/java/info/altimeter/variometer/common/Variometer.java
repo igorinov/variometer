@@ -29,6 +29,9 @@ public class Variometer {
     Sensor rotationSensor;
     Sensor accelerometers;
 
+    // For target API 31 (Android 12), sensor rate is limited to 200 Hz
+    // https://developer.android.com/guide/topics/sensors/sensors_overview#sensors-rate-limiting
+
     // Limit pressure sensor sampling rate to 25 Hz
     double minPressureSamplingPeriod = 0.04;
     double pressureSamplingPeriod;
@@ -99,7 +102,7 @@ public class Variometer {
     }
 
     public interface VariometerListener {
-        public void onVerticalSpeedUpdate(float v);
+        public void onStateUpdate(float h, float v);
     }
 
     public void setListener(VariometerListener l) {
@@ -180,6 +183,10 @@ public class Variometer {
             inv_n1 = 1.0 / n1;
         }
 
+        void setReferencePressure(double value) {
+            p0 = value;
+            inv_p0 = 1.0 / p0;
+        }
         double getAltitude(double p) {
             return H * (1 - Math.pow(p * inv_p0, inv_n1));
         }
@@ -230,6 +237,7 @@ public class Variometer {
                 filter.filterUpdateSequential(0, alt);
             }
             filter.getState(state);
+            float altitude = (float) state[0];
             float vspeed = (float) state[1];
 
             sigma_h = atmosphere.getStdH(state[0], sigma_p);
@@ -242,7 +250,7 @@ public class Variometer {
             }
 
             if (listener != null) {
-                listener.onVerticalSpeedUpdate(vspeed);
+                listener.onStateUpdate(altitude, vspeed);
             }
         }
     }
@@ -424,6 +432,22 @@ public class Variometer {
         manager.unregisterListener(listenerA);
         manager.unregisterListener(listenerR);
         mSensorThread.quitSafely();
+    }
+
+    public float getVerticalSpeed() {
+        return (float) filter.x.get(1);
+    }
+
+    public float getAltitude() {
+        return (float) filter.x.get(0);
+    }
+
+    public void setReferencePressure(float p0) {
+        double h = filter.x.get(0);
+        double p = atmosphere.getPressure(h);
+        atmosphere.setReferencePressure(p0);
+        h = atmosphere.getAltitude(p);
+        filter.x.set(0, h);
     }
 
     public void setLatitude(double phi) {

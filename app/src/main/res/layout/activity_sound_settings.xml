@@ -199,6 +199,21 @@
         </TextView>
 
         <TextView
+            android:labelFor="@id/sound_odd_partials"
+            style="@style/Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sound_odd_partials">
+        </TextView>
+
+        <CheckBox
+            android:id="@+id/sound_odd_partials"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/colorAccent">
+        </CheckBox>
+
+        <TextView
             android:labelFor="@id/sound_inharmonic"
             style="@style/Label"
             android:layout_width="wrap_content"
