@@ -124,7 +124,7 @@ public class Variometer {
 
     /**
      * Set accelerometer noise density
-     * @param std_a Accelerometer noise (standard deviation), m/s
+     * @param std_a Accelerometer noise (standard deviation), m/s²
      */
     public void setAccelerometerNoise(double std_a) {
         accelerometerNoiseDensity = std_a;
@@ -141,10 +141,10 @@ public class Variometer {
 
     /*
      *  Quaternion multiplication
-     *  q = w + xi + yj + dk
-     *  ij =  k;  jk =  i;  ki =  j
-     *  ji = -k;  kj = -i;  ik = -j
-     *  i² = j² = k² = ijk = -1
+     *  q = w + x·i + y·j + z·k
+     *  i·j =  k;  j·k =  i;  k·i =  j
+     *  j·i = -k;  k·j = -i;  i·k = -j
+     *  i² = j² = k² = i·j·k = -1
      */
 
     void HamiltonProduct(double[] dst, double[] src) {

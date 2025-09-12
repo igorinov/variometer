@@ -102,6 +102,11 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            if (key == null) {
+                // Yes, it can be null when apply() is called on a SharedPreferences.Editor
+                return;
+            }
+
             if (key.equals("pressure_unit")) {
                 pressureUnitIndex = sharedPreferences.getInt(key, pressureUnitIndex);
                 if (viewPressureUnit != null) {

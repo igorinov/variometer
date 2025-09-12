@@ -3,6 +3,8 @@ package info.altimeter.variometer;
 import static android.media.AudioFormat.CHANNEL_OUT_MONO;
 import static android.media.AudioFormat.ENCODING_PCM_16BIT;
 
+import static info.altimeter.variometer.IndicatorSettingsActivity.PREF_TYPE;
+
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -302,6 +304,11 @@ public class VariometerService extends Service {
 
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            if (key == null) {
+                // Yes, it can be null when apply() is called on a SharedPreferences.Editor
+                return;
+            }
+
             if (key.equals("baro")) {
                 if (variometer != null) {
                     variometer.setReferencePressure(sharedPreferences.getFloat(key, Float.NaN));
@@ -371,8 +378,11 @@ public class VariometerService extends Service {
             foregroundState = false;
         }
 
+        type = pref.getInt(PREF_TYPE, type);
+
         if (type == TYPE_VSI) {
             variometer = new Variometer(false, smoother_lag);
+            variometer.setProcessNoise(sigma_vsi);
         }
 
         if (type == TYPE_IVSI) {
@@ -424,6 +434,7 @@ public class VariometerService extends Service {
             stopForeground(STOP_FOREGROUND_REMOVE);
             foregroundState = false;
         }
+
         started = false;
         stopSelf();
     }

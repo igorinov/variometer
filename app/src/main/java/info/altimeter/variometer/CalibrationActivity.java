@@ -70,18 +70,6 @@ public class CalibrationActivity extends AppCompatActivity {
             R.drawable.phone_rightsidedown,
     };
 
-    static String[] factoryCalibratedModels = {
-            "Google", "Pixel 2",
-            "Google", "Pixel 3",
-            "Google", "Pixel 3a",
-            "Google", "Pixel 4",
-            "Google", "Pixel 4a",
-            "Google", "Pixel 5",
-            "Google", "Pixel 5a",
-            "Google", "Pixel 6",
-            "Google", "Pixel 6a",
-    };
-
     private void returnResult(int resultCode) {
         this.setResult(resultCode);
     }
