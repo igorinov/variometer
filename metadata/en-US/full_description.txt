@@ -1,0 +1,1 @@
+This application estimates vertical speed using built-in barometer and intertial sensors of an Android device.
