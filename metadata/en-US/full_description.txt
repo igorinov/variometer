@@ -1,1 +1,5 @@
-This application estimates vertical speed using built-in barometer and intertial sensors of an Android device.
+    This application estimates vertical speed, using data from internal barometer and inertial sensors. It will not work correctly inside the pressurized cabin of a passenger jet.
+
+    * A vertical speed indicator is displayed on the screen, unless the app in background;
+    * Altitude above mean sea level (MSL) is displayed, with adjustable altimeter setting;
+    * If sound output is enabled, it keeps working when the app is in background.
