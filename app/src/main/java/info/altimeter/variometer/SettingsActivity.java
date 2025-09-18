@@ -450,7 +450,7 @@ public class SettingsActivity extends AppCompatActivity {
             value = 0;
         }
 
-        textView.setText(Float.toString(value));
+        textView.setText(String.format("%.9f", value));
         textView.setOnClickListener(new FloatNumberClickListener(key));
     }
 
