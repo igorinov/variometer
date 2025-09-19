@@ -316,6 +316,30 @@ public class VariometerService extends Service {
                 return;
             }
 
+            if (key.equals(FilterParametersActivity.PREF_WEIGHT_X)) {
+                kB[0] = sharedPreferences.getFloat(key, (float) (kB[0] - 1)) + 1;
+            }
+
+            if (key.equals(FilterParametersActivity.PREF_WEIGHT_Y)) {
+                kB[1] = sharedPreferences.getFloat(key, (float) (kB[1] - 1)) + 1;
+            }
+
+            if (key.equals(FilterParametersActivity.PREF_WEIGHT_Z)) {
+                kB[2] = sharedPreferences.getFloat(key, (float) (kB[2] - 1)) + 1;
+            }
+
+            if (key.equals(FilterParametersActivity.PREF_BIAS_X)) {
+                kC[0] = sharedPreferences.getFloat(key, (float) kC[0]);
+            }
+
+            if (key.equals(FilterParametersActivity.PREF_BIAS_Y)) {
+                kC[1] = sharedPreferences.getFloat(key, (float) kC[1]);
+            }
+
+            if (key.equals(FilterParametersActivity.PREF_BIAS_Z)) {
+                kC[2] = sharedPreferences.getFloat(key, (float) kC[2]);
+            }
+
             if (key.equals(SoundSettingsActivity.PREF_SOUND_ENABLE)) {
                 soundEnabled = sharedPreferences.getBoolean(key, soundEnabled);
                 return;
@@ -348,6 +372,12 @@ public class VariometerService extends Service {
         pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         pref.registerOnSharedPreferenceChangeListener(preferenceListener);
         soundEnabled = pref.getBoolean(SoundSettingsActivity.PREF_SOUND_ENABLE, soundEnabled);
+        kB[0] = pref.getFloat(FilterParametersActivity.PREF_WEIGHT_X, 0) + 1.0;
+        kB[1] = pref.getFloat(FilterParametersActivity.PREF_WEIGHT_Y, 0) + 1.0;
+        kB[2] = pref.getFloat(FilterParametersActivity.PREF_WEIGHT_Z, 0) + 1.0;
+        kC[0] = pref.getFloat(FilterParametersActivity.PREF_BIAS_X, 0);
+        kC[1] = pref.getFloat(FilterParametersActivity.PREF_BIAS_Y, 0);
+        kC[2] = pref.getFloat(FilterParametersActivity.PREF_BIAS_Z, 0);
     }
 
     @Override
