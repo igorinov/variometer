@@ -35,7 +35,7 @@ public class VerticalSpeedIndicator extends View
 	float scale = 1f;
 	int headFillColor = Color.rgb(238, 238, 238);
 	int plateColor = Color.rgb(51, 51, 51);
-	int frameColor = Color.rgb(68, 68, 68);
+	int frameColor = Color.rgb(85, 85, 85);
 	int tailFillColor = Color.rgb(68, 68, 68);
 	int tailStrokeColor = Color.rgb(85, 85, 85);
 	float unit = 1f;
@@ -45,6 +45,7 @@ public class VerticalSpeedIndicator extends View
 	float vspeed = Float.NaN;
 	String typeName = "";
 	String unitName = "m/s";
+	Paint drawPaint = null;
 
 	public VerticalSpeedIndicator(Context context) {
 		this(context, null);
@@ -72,6 +73,18 @@ public class VerticalSpeedIndicator extends View
 
 		//  Request largest possible square (width = height), assuming square pixels
 		int maxSide = Math.min(metrics.widthPixels, metrics.heightPixels);
+
+		if (widthMode == MeasureSpec.AT_MOST) {
+			if (maxSide > widthSize) {
+				maxSide = widthSize;
+			}
+		}
+
+		if (heightMode == MeasureSpec.AT_MOST) {
+			if (maxSide > heightSize) {
+				maxSide = heightSize;
+			}
+		}
 
 		switch (widthMode) {
 		case MeasureSpec.UNSPECIFIED:
@@ -102,14 +115,17 @@ public class VerticalSpeedIndicator extends View
 
 	@Override
 	protected void onDraw(Canvas canvas) {
-		Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		Paint paint = drawPaint;
+		if (null == paint) {
+			return;
+		}
 		paint.setFilterBitmap(true);
 
-		float cx = getWidth() / 2;
-		float cy = getHeight() / 2;
+		float cx = getWidth() / 2f;
+		float cy = getHeight() / 2f;
 		float indication = vspeed * unitR;
 
-		canvas.drawBitmap(dialPlate, cx - dialPlate.getWidth() / 2, cy - dialPlate.getHeight() / 2, paint);
+		canvas.drawBitmap(dialPlate, cx - dialPlate.getWidth() / 2f, cy - dialPlate.getHeight() / 2f, paint);
 
 		if (Float.isNaN(vspeed)) {
 			paint.setColor(Color.RED);
@@ -121,7 +137,7 @@ public class VerticalSpeedIndicator extends View
 		} else {
 			canvas.save();
 			canvas.rotate((float) (indication * 180f * scaleLimitR), cx, cy);
-			canvas.drawBitmap(dialArrow, cx - dialArrow.getWidth() / 2, cy - dialArrow.getHeight() / 2, paint);
+			canvas.drawBitmap(dialArrow, cx - dialArrow.getWidth() / 2f, cy - dialArrow.getHeight() / 2f, paint);
 			canvas.restore();
 		}
 	}
@@ -137,6 +153,10 @@ public class VerticalSpeedIndicator extends View
 		float textMiddle;
 		float tx, ty;
 		int i;
+
+		if (null == drawPaint) {
+			drawPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		}
 
 		if (width * height == 0) {
 			return;
@@ -170,8 +190,11 @@ public class VerticalSpeedIndicator extends View
 		canvas = new Canvas(dialPlate);
 		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		paint.setStyle(Style.FILL_AND_STROKE);
+/*
 		paint.setColor(Color.BLACK);
 		canvas.drawRect(0, 0, width, height, paint);
+*/
+
 		if (scale != 1) {
 			mmm.setScale(scale, scale, cx, cy);
 		}
@@ -216,7 +239,6 @@ public class VerticalSpeedIndicator extends View
 		int step = 1;
         int subdivs = 10;
         if (scaleLimit > 6) {
-            step = 1;
             subdivs = 5;
         }
 		if (scaleLimit > 8) {

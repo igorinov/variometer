@@ -93,9 +93,12 @@
     <string name="enter">Enter</string>
     <string name="label_pressure">Altimeter setting</string>
     <string name="ft">ft</string>
-    <string name="channel_name">VSI Notification Channel</string>
+    <string name="channel_name">Vertical Speed Indicator</string>
     <string name="channel_description">Keep VSI running as a foreground service</string>
     <string name="sound_odd_partials">Odd partials only</string>
+    <string name="main_menu">Main menu</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
 
     <string-array name="alt_units">
         <item>m</item>

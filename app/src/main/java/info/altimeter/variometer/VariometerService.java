@@ -1,5 +1,6 @@
 package info.altimeter.variometer;
 
+import static android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK;
 import static android.media.AudioFormat.CHANNEL_OUT_MONO;
 import static android.media.AudioFormat.ENCODING_PCM_16BIT;
 
@@ -13,7 +14,13 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.Icon;
 import android.media.AudioAttributes;
 import android.media.AudioFormat;
 import android.media.AudioManager;
@@ -22,11 +29,14 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
+import android.util.TypedValue;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.ServiceCompat;
 import androidx.preference.PreferenceManager;
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 
 import info.altimeter.variometer.common.Variometer;
 
@@ -39,7 +49,7 @@ public class VariometerService extends Service {
     NotificationCompat.Builder mBuilder;
     Notification notification = null;
     boolean foregroundState = false;
-    int notifyID = 375;
+    int notifyID = 1;
     SharedPreferences pref;
     VariometerServiceListener myListener = new VariometerServiceListener();
     VarioPreferenceListener preferenceListener = new VarioPreferenceListener();
@@ -318,26 +328,32 @@ public class VariometerService extends Service {
 
             if (key.equals(FilterParametersActivity.PREF_WEIGHT_X)) {
                 kB[0] = sharedPreferences.getFloat(key, (float) (kB[0] - 1)) + 1;
+                return;
             }
 
             if (key.equals(FilterParametersActivity.PREF_WEIGHT_Y)) {
                 kB[1] = sharedPreferences.getFloat(key, (float) (kB[1] - 1)) + 1;
+                return;
             }
 
             if (key.equals(FilterParametersActivity.PREF_WEIGHT_Z)) {
                 kB[2] = sharedPreferences.getFloat(key, (float) (kB[2] - 1)) + 1;
+                return;
             }
 
             if (key.equals(FilterParametersActivity.PREF_BIAS_X)) {
                 kC[0] = sharedPreferences.getFloat(key, (float) kC[0]);
+                return;
             }
 
             if (key.equals(FilterParametersActivity.PREF_BIAS_Y)) {
                 kC[1] = sharedPreferences.getFloat(key, (float) kC[1]);
+                return;
             }
 
             if (key.equals(FilterParametersActivity.PREF_BIAS_Z)) {
                 kC[2] = sharedPreferences.getFloat(key, (float) kC[2]);
+                return;
             }
 
             if (key.equals(SoundSettingsActivity.PREF_SOUND_ENABLE)) {
@@ -360,12 +376,14 @@ public class VariometerService extends Service {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = getString(R.string.channel_name);
             String description = getString(R.string.channel_description);
-            int importance = NotificationManager.IMPORTANCE_LOW;
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
             channel.enableVibration(false);
-            channel.setSound(null, null);
-            channel.setImportance(NotificationManager.IMPORTANCE_LOW);
+            channel.enableLights(true);
+            channel.setLightColor(Color.YELLOW);
+            // channel.setSound(null, null);
+            // channel.setImportance(NotificationManager.IMPORTANCE_LOW);
             notificationManager.createNotificationChannel(channel);
         }
 
@@ -383,6 +401,9 @@ public class VariometerService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flag, int startId) {
         Intent notifyIntent = new Intent(this, MainActivity.class);
+        notifyIntent.setAction(Intent.ACTION_MAIN);
+        notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent notifyPendingIntent = PendingIntent.getActivity(
@@ -393,14 +414,23 @@ public class VariometerService extends Service {
         mBuilder.setContentTitle("Vertical Speed Indicator");
         mBuilder.setContentText("Running");
         mBuilder.setSmallIcon(R.drawable.ic_vsi_24dp);
+        Drawable d = VectorDrawableCompat.create(getApplicationContext().getResources(), R.drawable.ic_launcher_foreground, null);
+        Bitmap icon = drawablewToBitmap(d);
+        mBuilder.setLargeIcon(icon);
         mBuilder.setContentIntent(notifyPendingIntent);
         mBuilder.setAutoCancel(false);
         mBuilder.setCategory(Notification.CATEGORY_SERVICE);
         mBuilder.setOngoing(true);
+        mBuilder.setSilent(true);
 
+        // float smallIconSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24f, Resources.getSystem().getDisplayMetrics());
         try {
             notification = mBuilder.build();
-            startForeground(notifyID, notification);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                startForeground(notifyID, notification, FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK);
+            } else {
+                startForeground(notifyID, notification);
+            }
             foregroundState = true;
             started = true;
         } catch (Exception e) {
@@ -447,6 +477,16 @@ public class VariometerService extends Service {
         }
 
         return Service.START_STICKY;
+    }
+
+    private Bitmap drawablewToBitmap(Drawable d) {
+        int w = getResources().getDimensionPixelSize(android.R.dimen.notification_large_icon_width);
+        int h = getResources().getDimensionPixelSize(android.R.dimen.notification_large_icon_height);
+        Bitmap b = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(b);
+        d.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        d.draw(canvas);
+        return b;
     }
 
     public void stopEverything()  {

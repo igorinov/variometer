@@ -1,82 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
     android:orientation="vertical"
-    android:gravity="center">
+    android:id="@+id/root">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1">
 
     <info.altimeter.variometer.common.VerticalSpeedIndicator
         android:id="@+id/vsi"
-        android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="1"
-        android:background="@android:color/black" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+         />
+
+        <ImageButton
+            android:id="@+id/menu"
+            android:layout_width="32pt"
+            android:layout_height="32pt"
+            android:layout_alignEnd="@id/vsi"
+            android:layout_alignBottom="@+id/vsi"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/main_menu"
+            android:src="@drawable/ic_triple_dot" />
+
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="horizontal">
 
         <TextView
+            android:id="@+id/pressure"
             android:layout_width="48pt"
             android:layout_height="24pt"
-            android:id="@+id/pressure"
-            android:gravity="center_vertical|end"
             android:fontFamily="monospace"
-            android:textSize="12pt"
-            android:textColor="#FF33CCCC" />
+            android:gravity="center_vertical|end"
+            android:textColor="#FF33CCCC"
+            android:textSize="12pt" />
 
         <TextView
+            android:id="@+id/pressure_unit"
             android:layout_width="24pt"
             android:layout_height="24pt"
-            android:id="@+id/pressure_unit"
-            android:textAlignment="center"
-            android:gravity="center"
             android:fontFamily="sans-serif"
-            android:textSize="9pt"
-            android:textColor="#FF33CCCC" />
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textColor="#FF33CCCC"
+            android:textSize="9pt" />
 
         <TextView
+            android:id="@+id/altitude"
             android:layout_width="48pt"
             android:layout_height="24pt"
-            android:id="@+id/altitude"
             android:gravity="center_vertical|end"
-            android:textSize="12pt"
-            android:textColor="#FFFFFFFF" />
+            android:textColor="#FFFFFFFF"
+            android:textSize="12pt" />
 
         <TextView
             android:id="@+id/alt_unit"
             android:layout_width="24pt"
             android:layout_height="24pt"
-            android:paddingHorizontal="3pt"
-            android:gravity="center"
             android:fontFamily="sans-serif"
+            android:gravity="center"
+            android:paddingHorizontal="3pt"
             android:textSize="12pt" />
 
     </LinearLayout>
 
     <LinearLayout
+        style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="horizontal">
 
         <Button
-            android:layout_width="72pt"
-            android:layout_height="24pt"
             android:id="@+id/start"
-            android:text="Start"
-            android:textSize="9pt"
-            android:textAllCaps="false" />
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="72pt"
+            android:layout_height="36pt"
+            android:text="@string/start"
+            android:textAllCaps="false"
+            android:textSize="9pt" />
 
         <Button
-            android:layout_width="72pt"
-            android:layout_height="24pt"
             android:id="@+id/stop"
-            android:text="Stop"
-            android:textSize="9pt"
-            android:textAllCaps="false" />
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="72pt"
+            android:layout_height="36pt"
+            android:text="@string/stop"
+            android:textAllCaps="false"
+            android:textSize="9pt" />
 
     </LinearLayout>
 </LinearLayout>

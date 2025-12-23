@@ -2,16 +2,32 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:baselineAligned="false"
     android:orientation="horizontal"
-    android:background="@android:color/black">
+    android:id="@+id/root"
+    android:fitsSystemWindows="true">
+
+    <RelativeLayout
+        android:layout_width="0dip"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
 
     <info.altimeter.variometer.common.VerticalSpeedIndicator
         android:id="@+id/vsi"
-        android:layout_width="0dip"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@android:color/black" />
-
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"/>
+        <ImageButton
+            android:id="@+id/menu"
+            android:layout_width="32pt"
+            android:layout_height="32pt"
+            android:layout_alignBottom="@id/vsi"
+            android:layout_alignEnd="@id/vsi"
+            android:contentDescription="@string/main_menu"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_triple_dot" />
+    </RelativeLayout>
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -67,18 +83,20 @@
 
         <Button
             android:layout_width="72pt"
-            android:layout_height="24pt"
+            android:layout_height="36pt"
             android:id="@+id/start"
-            android:text="Start"
+            android:text="@string/start"
             android:textSize="9pt"
+            style="?android:attr/buttonBarButtonStyle"
             android:textAllCaps="false" />
 
         <Button
             android:layout_width="72pt"
-            android:layout_height="24pt"
+            android:layout_height="36pt"
             android:id="@+id/stop"
-            android:text="Stop"
+            android:text="@string/stop"
             android:textSize="9pt"
+            style="?android:attr/buttonBarButtonStyle"
             android:textAllCaps="false" />
 
     </LinearLayout>

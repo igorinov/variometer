@@ -354,6 +354,9 @@ public class Variometer {
         pressureSamplePeriod_us = (int) Math.round(pressureSamplingPeriod * 1e6);
 
         accelerometers = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        if (accelerometers == null) {
+            return;
+        }
         accelerationSamplingPeriod = accelerometers.getMinDelay() * 1e-6;
         if (accelerationSamplingPeriod < minAccelerationSamplingPeriod) {
             accelerationSamplingPeriod = minAccelerationSamplingPeriod;
@@ -487,29 +490,27 @@ public class Variometer {
      */
     public static void biasUpdate(double[] b, double[] c, double[] data, int length, double g) {
         /*
-         *  Squared length of corrected vector [x, y, z]
-         *  lₖ² = (b_x·xₖ + c₀)² + (b_y·yₖ + c₁)² + (b_z·zₖ + c₂)²
+         *  Squared length of corrected vector vₖ = [ b₀·xₖ + c₀ , b₁·yₖ + c₁, b₂·zₖ + c₂ ]
+         *  lₖ² = (b₀·xₖ + c₀)² + (b₁·yₖ + c₁)² + (b₂·zₖ + c₂)²
          *
          *  Squared error (difference from local gravity)
          *  fₖ = (lₖ - g)²
          *
          *  Minimize ∑fₖ by gradient descent:
          *
-         *     ∂f / ∂b_x = 2·x·(l - g) (b_x·x + c0) / l
-         *     ∂f / ∂b_y = 2·y·(l - g) (b_y·y + c1) / l
-         *     ∂f / ∂b_z = 2·z·(l - g) (b_z·z + c2) / l
+         *     ∂f / ∂b₀ = 2·x·(l - g) (b₀·x + c₀) / l
+         *     ∂f / ∂b₁ = 2·y·(l - g) (b₁·y + c₁) / l
+         *     ∂f / ∂b₂ = 2·z·(l - g) (b₂·z + c₂) / l
          *
-         *     ∂f / ∂c_x = 2·(l - g) (b_x·x + c0) / l
-         *     ∂f / ∂c_y = 2·(l - g) (b_y·y + c1) / l
-         *     ∂f / ∂c_z = 2·(l - g) (b_z·z + c2) / l
+         *     ∂f / ∂c₀ = 2·(l - g) (b₀·x + c₀) / l
+         *     ∂f / ∂c₁ = 2·(l - g) (b₁·y + c₁) / l
+         *     ∂f / ∂c₂ = 2·(l - g) (b₂·z + c₂) / l
          */
 
         int N = 4096;
         int i, k;
         double x, y, z;
-        double b_x, b_y, b_z;
-        double c_x, c_y, c_z;
-        double[] ac = new double[3];
+        double[] v = new double[3];
         double gbx, gby, gbz;
         double gcx, gcy, gcz;
         double ll, l;
@@ -521,12 +522,12 @@ public class Variometer {
         // Learning rate for C
         double lr_c = 3e-3;
 
-        b_x = 1;
-        b_y = 1;
-        b_z = 1;
-        c_x = 0;
-        c_y = 0;
-        c_z = 0;
+        b[0] = 1;
+        b[1] = 1;
+        b[2] = 1;
+        c[0] = 0;
+        c[1] = 0;
+        c[2] = 0;
 
         for (i = 0; i < N; i += 1) {
             gbx = 0;
@@ -542,23 +543,23 @@ public class Variometer {
                 z = data[k + 2];
 
                 // Corrected acceleration vector
-                ac[0] = b_x * x + c_x;
-                ac[1] = b_y * y + c_y;
-                ac[2] = b_z * z + c_z;
+                v[0] = b[0] * x + c[0];
+                v[1] = b[1] * y + c[1];
+                v[2] = b[2] * z + c[2];
 
                 // Squared length of the corrected acceleration vector
-                ll = powerSum(ac);
+                ll = powerSum(v);
                 l = Math.sqrt(ll);
 
                 // Update the weight gradient vector
-                gbx += 2 * x * (l - g) * ac[0] / l;
-                gby += 2 * y * (l - g) * ac[1] / l;
-                gbz += 2 * z * (l - g) * ac[2] / l;
+                gbx += 2 * x * (l - g) * v[0] / l;
+                gby += 2 * y * (l - g) * v[1] / l;
+                gbz += 2 * z * (l - g) * v[2] / l;
 
                 // Update the bias gradient vector
-                gcx += 2 * (l - g) * ac[0] / l;
-                gcy += 2 * (l - g) * ac[1] / l;
-                gcz += 2 * (l - g) * ac[2] / l;
+                gcx += 2 * (l - g) * v[0] / l;
+                gcy += 2 * (l - g) * v[1] / l;
+                gcz += 2 * (l - g) * v[2] / l;
             }
 
             gbx *= r_l;
@@ -566,25 +567,18 @@ public class Variometer {
             gbz *= r_l;
 
             // Update vector B
-            b_x -= gbx * lr_b;
-            b_y -= gby * lr_b;
-            b_z -= gbz * lr_b;
+            b[0] -= gbx * lr_b;
+            b[1] -= gby * lr_b;
+            b[2] -= gbz * lr_b;
 
             gcx *= r_l;
             gcy *= r_l;
             gcz *= r_l;
 
             // Update vector C
-            c_x -= gcx * lr_c;
-            c_y -= gcy * lr_c;
-            c_z -= gcz * lr_c;
+            c[0] -= gcx * lr_c;
+            c[1] -= gcy * lr_c;
+            c[2] -= gcz * lr_c;
         }
-
-        b[0] = b_x;
-        b[1] = b_y;
-        b[2] = b_z;
-        c[0] = c_x;
-        c[1] = c_y;
-        c[2] = c_z;
     }
 }

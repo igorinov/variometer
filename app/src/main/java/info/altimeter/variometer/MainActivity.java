@@ -5,8 +5,8 @@
 
 package info.altimeter.variometer;
 
+import static android.Manifest.permission.POST_NOTIFICATIONS;
 import static info.altimeter.variometer.PressureActivity.pressureFormats;
-import static info.altimeter.variometer.PressureActivity.pressureUnits;
 import static info.altimeter.variometer.PressureActivity.pressureUnitsR;
 
 import android.app.Dialog;
@@ -15,8 +15,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.graphics.Insets;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -25,13 +27,22 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.OnApplyWindowInsetsListener;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.preference.PreferenceManager;
+
+import java.util.ArrayList;
+import java.util.Locale;
 
 import info.altimeter.variometer.common.VerticalSpeedIndicator;
 
@@ -128,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(MainActivity.this, VariometerService.class);
+            String[] perms = null;
             startForegroundService(intent);
             if (buttonStart != null) {
                 buttonStart.setEnabled(false);
@@ -153,9 +165,6 @@ public class MainActivity extends AppCompatActivity {
             }
             vspeed = Float.NaN;
             altitude = Float.NaN;
-//            vsi.setVSpeed(vspeed);
-//            vsi.invalidate();
-//            alt.setText("");
             updateHandler.sendEmptyMessage(UPDATE_INDICATORS_NOW);
         }
     }
@@ -238,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
                 if (Float.isNaN(altitude)) {
                     viewAltitude.setText("");
                 } else {
-                    viewAltitude.setText(Integer.toString(Math.round(altitude * 3.28084f)));
+                    viewAltitude.setText(Integer.toString(Locale.US, Math.round(altitude * 3.28084f)));
                 }
             }
         }
@@ -266,47 +275,50 @@ public class MainActivity extends AppCompatActivity {
         Intent intent;
         SharedPreferences.Editor editor;
 
-        switch (item.getItemId()) {
-            case R.id.defaults:
-                editor = pref.edit();
-                editor.clear();
-                editor.apply();
-                recreate();
-                break;
+        final int id = item.getItemId();
 
-            case R.id.accelerometer_calibration:
-                intent = new Intent(this, CalibrationActivity.class);
-                startActivityForResult(intent, REQUEST_CODE_CALIBRATION);
-                break;
-
-            case R.id.indicator_settings:
-                intent = new Intent(this, IndicatorSettingsActivity.class);
-                startActivityForResult(intent, REQUEST_CODE_PREFERENCES);
-                break;
-
-            case R.id.sound_settings:
-                intent = new Intent(this, SoundSettingsActivity.class);
-                startActivityForResult(intent, REQUEST_CODE_PREFERENCES);
-                break;
-
-            case R.id.filter_parameters:
-                intent = new Intent(this, FilterParametersActivity.class);
-                startActivityForResult(intent, REQUEST_CODE_PREFERENCES);
-                break;
-
-            case R.id.about:
-                Dialog aDialog = new Dialog(this, R.style.Dialog);
-                aDialog.setContentView(R.layout.about);
-                aDialog.setTitle(getString(R.string.about));
-                aDialog.setCancelable(true);
-                aDialog.show();
-                break;
-
-            default:
-                return super.onOptionsItemSelected(item);
+        if (id == R.id.defaults) {
+            editor = pref.edit();
+            editor.clear();
+            editor.apply();
+            recreate();
+            return true;
         }
 
-        return true;
+        if (id == R.id.accelerometer_calibration) {
+            intent = new Intent(this, CalibrationActivity.class);
+            startActivityForResult(intent, REQUEST_CODE_CALIBRATION);
+            return true;
+        }
+
+        if (id == R.id.indicator_settings) {
+            intent = new Intent(this, IndicatorSettingsActivity.class);
+            startActivityForResult(intent, REQUEST_CODE_PREFERENCES);
+            return true;
+        }
+
+        if (id == R.id.sound_settings) {
+            intent = new Intent(this, SoundSettingsActivity.class);
+            startActivityForResult(intent, REQUEST_CODE_PREFERENCES);
+            return true;
+        }
+
+        if (id == R.id.filter_parameters) {
+            intent = new Intent(this, FilterParametersActivity.class);
+            startActivityForResult(intent, REQUEST_CODE_PREFERENCES);
+            return true;
+        }
+
+        if (id == R.id.about) {
+            Dialog aDialog = new Dialog(this, R.style.Dialog);
+            aDialog.setContentView(R.layout.about);
+            aDialog.setTitle(getString(R.string.about));
+            aDialog.setCancelable(true);
+            aDialog.show();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -329,10 +341,64 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    class MenuButtonListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            PopupMenu popup = new PopupMenu(MainActivity.this, v);
+            popup.getMenuInflater().inflate(R.menu.main, popup.getMenu());
+            MenuItem item = popup.getMenu().findItem(R.id.enable_sound);
+            if (item != null) {
+                item.setChecked(soundEnabled);
+            }
+            popup.setOnMenuItemClickListener(MainActivity.this::onOptionsItemSelected);
+            popup.show();
+        }
+    }
+    static class MyListener implements OnApplyWindowInsetsListener {
+        @NonNull
+        @Override
+        public WindowInsetsCompat onApplyWindowInsets(@NonNull View v, @NonNull WindowInsetsCompat windowInsets) {
+            Insets insets = null;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                insets = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars()).toPlatformInsets();
+                // Apply the insets as a margin to the view. This solution sets only the
+                // bottom, left, and right dimensions, but you can apply whichever insets are
+                // appropriate to your layout. You can also update the view padding if that's
+                // more appropriate.
+                ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+                mlp.topMargin = insets.top;
+                mlp.leftMargin = insets.left;
+                mlp.bottomMargin = insets.bottom;
+                mlp.rightMargin = insets.right;
+                v.setLayoutParams(mlp);
+            }
+
+            // Return CONSUMED if you don't want the window insets to keep passing
+            // down to descendant views.
+            return WindowInsetsCompat.CONSUMED;
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
+
+        View v = findViewById(R.id.root);
+        if (null != v) {
+            ViewCompat.setOnApplyWindowInsetsListener(v, new MyListener());
+        }
+/*
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            getWindow().setNavigationBarContrastEnforced(false);
+        }
+*/
+        v = findViewById(R.id.menu);
+        if (null != v) {
+            v.setOnClickListener(new MenuButtonListener());
+        }
 
         pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         referencePressure = pref.getFloat("baro", SensorManager.PRESSURE_STANDARD_ATMOSPHERE);
@@ -381,13 +447,14 @@ public class MainActivity extends AppCompatActivity {
         updateHandler = new UpdateHandler();
 
         serviceConnection = new VariometerServiceConnection();
-/*
-        if (varioService == null) {
-            // Creating the service but not starting it yet
-            Intent intent = new Intent(MainActivity.this, VariometerService.class);
-            bindService(intent, serviceConnection, BIND_AUTO_CREATE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ArrayList<String> perms = new ArrayList<>();
+            perms.add(POST_NOTIFICATIONS);
+            String[] permissions = new String[perms.size()];
+            perms.toArray(permissions);
+            requestPermissions(permissions, 1);
         }
-*/
     }
 
     @Override
@@ -417,10 +484,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onPause() {
-//        vspeed = Float.NaN;
-//        vsi.setVSpeed(vspeed);
-//        vsi.invalidate();
-
         super.onPause();
     }
 
@@ -439,7 +502,6 @@ public class MainActivity extends AppCompatActivity {
 
         vsi.setUnit(vsiLimit, vsiUnits[vsiUnitIndex], vsiUnitNames[vsiUnitIndex]);
         viewAltitudeUnit.setText(getResources().getStringArray(R.array.alt_units)[altUnitIndex]);
-
         viewPressure.setText(String.format(pressureFormats[pressureUnitIndex], referencePressure * pressureUnitsR[pressureUnitIndex]));
     }
 
