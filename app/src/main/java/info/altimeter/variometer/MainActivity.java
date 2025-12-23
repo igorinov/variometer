@@ -9,6 +9,7 @@ import static android.Manifest.permission.POST_NOTIFICATIONS;
 import static info.altimeter.variometer.PressureActivity.pressureFormats;
 import static info.altimeter.variometer.PressureActivity.pressureUnitsR;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Context;
@@ -226,6 +227,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     class UpdateHandler extends Handler {
+        @SuppressLint("SetTextI18n")
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
@@ -247,7 +249,7 @@ public class MainActivity extends AppCompatActivity {
                 if (Float.isNaN(altitude)) {
                     viewAltitude.setText("");
                 } else {
-                    viewAltitude.setText(Integer.toString(Locale.US, Math.round(altitude * 3.28084f)));
+                    viewAltitude.setText(Integer.toString(Math.round(altitude * 3.28084f)));
                 }
             }
         }
